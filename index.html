@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAINCOON STELLAR</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+
+  <!-- Шрифты Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+  <!-- CSS — порядок важен -->
+  <link rel="stylesheet" href="./css/variables.css?v=4">
+  <link rel="stylesheet" href="./css/base.css?v=3">
+  <link rel="stylesheet" href="./css/animations.css?v=2">
+  <link rel="stylesheet" href="./css/layout.css?v=2">
+  <link rel="stylesheet" href="./css/sidebar.css?v=2">
+  <link rel="stylesheet" href="./css/detail.css?v=3">
+  <link rel="stylesheet" href="./css/components.css?v=2">
+  <link rel="stylesheet" href="./css/modal.css?v=2">
+  <link rel="stylesheet" href="./css/breeding.css?v=5">
+  <link rel="stylesheet" href="./css/journal.css?v=15">
+  <link rel="stylesheet" href="./css/settings.css?v=4">
+  <link rel="stylesheet" href="./css/litters.css?v=1">
+  <link rel="stylesheet" href="./css/generations.css?v=1">
+  <link rel="stylesheet" href="./css/mobile.css?v=1">
+</head>
+<body>
+
+<!-- ═══ ЗВЁЗДНЫЙ CANVAS ═══ -->
+<canvas id="starCanvas"></canvas>
+
+<!-- ═══ ТУМАННОСТИ ═══ -->
+<div class="nebula-layer nebula-1"></div>
+<div class="nebula-layer nebula-2"></div>
+<div class="nebula-layer nebula-3"></div>
+
+<!-- ═══ ТОСТ-УВЕДОМЛЕНИЯ ═══ -->
+<div id="toast"></div>
+
+<!-- ═══ ПРИЛОЖЕНИЕ ═══ -->
+<div id="app">
+
+  <!-- ХЕДЕР -->
+  <header id="header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="18" stroke="#3fd2ff" stroke-width="1" stroke-opacity="0.4"/>
+          <path d="M12 26 C12 18, 28 18, 28 26" stroke="#3fd2ff" stroke-width="1.5" fill="none"/>
+          <ellipse cx="20" cy="22" rx="8" ry="6" fill="#0d1630" stroke="#3fd2ff" stroke-width="1"/>
+          <circle cx="17" cy="22" r="1.5" fill="#3fd2ff" opacity="0.8"/>
+          <circle cx="23" cy="22" r="1.5" fill="#3fd2ff" opacity="0.8"/>
+          <path d="M20 23.5 L19 24.5 L21 24.5 Z" fill="#8a4fff" opacity="0.7"/>
+          <!-- уши -->
+          <path d="M13 19 L11 14 L16 17 Z" fill="#0d1630" stroke="#3fd2ff" stroke-width="1"/>
+          <path d="M27 19 L29 14 L24 17 Z" fill="#0d1630" stroke="#3fd2ff" stroke-width="1"/>
+          <!-- звезда-искра -->
+          <path d="M32 8 L33 6 L34 8 L36 9 L34 10 L33 12 L32 10 L30 9 Z" fill="#3fd2ff" opacity="0.8"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-main">MAINCOON</span>
+        <span class="logo-sub">✦ STELLAR ✦</span>
+      </div>
+    </div>
+
+    <nav class="header-nav">
+      <button class="nav-tab active" data-tab="cattery">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span data-i18n="Питомник">Питомник</span>
+      </button>
+      <button class="nav-tab" data-tab="breeding">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v4m0 12v4M2 12h4m12 0h4m-4.22-7.78l-2.83 2.83M8.05 15.95l-2.83 2.83m0-14.14l2.83 2.83m7.09 7.09l2.83 2.83"/>
+        </svg>
+        <span data-i18n="Прогноз вязки">Прогноз вязки</span>
+      </button>
+      <button class="nav-tab" data-tab="journal">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span data-i18n="Журнал">Журнал</span>
+      </button>
+      <button class="nav-tab" data-tab="litters">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/>
+        </svg>
+        <span data-i18n="Пометы">Пометы</span>
+        <span class="tab-badge" id="litters-badge" style="display:none">0</span>
+      </button>
+      <button class="nav-tab" data-tab="generations">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="5" r="2"/>
+          <circle cx="5" cy="19" r="2"/>
+          <circle cx="19" cy="19" r="2"/>
+          <line x1="12" y1="7" x2="5" y2="17"/>
+          <line x1="12" y1="7" x2="19" y2="17"/>
+        </svg>
+        <span data-i18n="Карта поколений">Карта поколений</span>
+      </button>
+    </nav>
+
+    <button class="export-btn" id="openExport" data-i18n-title="Экспорт данных" title="Экспорт данных">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+    </button>
+    <button class="settings-btn" id="openSettings" data-i18n-title="Настройки" title="Настройки">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- КОНТЕНТ -->
+  <main id="main">
+
+    <!-- ══ ПИТОМНИК ══ -->
+    <div class="tab-panel active cattery-panel" id="panel-cattery">
+
+      <!-- САЙДБАР -->
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <div class="search-input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input class="search-input" type="text" id="searchInput" data-i18n-ph="Поиск по имени, EMS..." placeholder="Поиск по имени, EMS...">
+          </div>
+        </div>
+
+        <div class="filter-chips">
+          <button class="chip active" data-filter="all" data-i18n="Все">Все</button>
+          <button class="chip" data-filter="female" data-i18n="♀ Кошки">♀ Кошки</button>
+          <button class="chip" data-filter="male" data-i18n="♂ Коты">♂ Коты</button>
+          <button class="chip" data-filter="own" data-i18n="Питомник">Питомник</button>
+          <button class="chip" data-filter="active" data-i18n="Активные">Активные</button>
+        </div>
+
+        <div class="pet-list" id="petList">
+          <!-- Заполняется JS -->
+        </div>
+
+        <div class="sidebar-actions">
+          <button class="btn btn-primary" id="addPetBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span data-i18n="Добавить питомца">Добавить питомца</span>
+          </button>
+          <button class="btn btn-danger" id="deletePetBtn" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14H6L5 6m5 0V4h4v2"/>
+            </svg>
+            <span data-i18n="Удалить питомца">Удалить питомца</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- ЦЕНТРАЛЬНАЯ ПАНЕЛЬ -->
+      <div class="detail-panel" id="detailPanel">
+        <div class="empty-state" id="emptyState">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <p data-i18n="Выберите питомца из списка">Выберите питомца из списка</p>
+        </div>
+        <div id="petDetail" style="display:none" class="anim-fade-in"></div>
+      </div>
+    </div>
+
+    <!-- ══ ПРОГНОЗ ВЯЗКИ ══ -->
+    <div class="tab-panel" id="panel-breeding">
+      <div id="breedingContent" class="breeding-panel">
+        <!-- Заполняется js/render/breedingPanel.js -->
+      </div>
+    </div>
+
+    <!-- ══ ЖУРНАЛ ══ -->
+    <div class="tab-panel" id="panel-journal">
+      <div id="journalContent">
+        <!-- Заполняется js/render/journal.js -->
+      </div>
+    </div>
+
+    <!-- ══ ПОМЕТЫ ══ -->
+    <div class="tab-panel" id="panel-litters">
+
+      <!-- Сайдбар помётов -->
+      <div class="litters-sidebar">
+        <div class="litters-sidebar-header">
+          <select class="litters-year-filter" id="litterYearFilter">
+            <option value="">Все годы</option>
+          </select>
+        </div>
+        <div class="litter-list" id="litterList">
+          <!-- Заполняется JS -->
+        </div>
+        <div class="litters-sidebar-actions">
+          <button class="btn btn-primary" id="addLitterBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span data-i18n="Добавить помёт">Добавить помёт</span>
+          </button>
+          <button class="btn btn-danger" id="deleteLitterBtn" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14H6L5 6m5 0V4h4v2"/>
+            </svg>
+            <span data-i18n="Удалить помёт">Удалить помёт</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Правая панель -->
+      <div class="litters-detail" id="littersDetailContent">
+        <!-- Заполняется JS -->
+      </div>
+    </div>
+
+    <!-- ══ КАРТА ПОКОЛЕНИЙ ══ -->
+    <div class="tab-panel" id="panel-generations">
+      <!-- Заполняется js/render/generationsPanel.js -->
+    </div>
+
+  </main>
+
+  <!-- ФУТЕР -->
+  <footer id="footer">
+    <div class="footer-nav-tabs">
+      <button class="footer-tab active" data-tab="cattery" data-i18n="Питомник">Питомник</button>
+      <button class="footer-tab" data-tab="breeding" data-i18n="Вязки">Вязки</button>
+      <button class="footer-tab" data-tab="journal" data-i18n="Журнал">Журнал</button>
+      <button class="footer-tab" data-tab="litters" data-i18n="Пометы">Пометы</button>
+      <button class="footer-tab" data-tab="generations" data-i18n="Поколения">Поколения</button>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" data-lang="ru">RU</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </footer>
+
+</div><!-- /#app -->
+
+<!-- ═══ МОДАЛ: ДОБАВИТЬ ПИТОМЦА ═══ -->
+<div class="modal-overlay" id="addPetModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" data-i18n="✦ Добавить питомца">✦ Добавить питомца</span>
+      <button class="modal-close" id="closeAddModal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="form-grid" id="addPetForm">
+      <div class="form-group full">
+        <label class="form-label">Полное имя животного</label>
+        <input class="edit-input" id="f-name" type="text" placeholder="Например: Azula Legend of Nevendaar*RU">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Питомник</label>
+        <select class="edit-input edit-select" id="f-cattery-type">
+          <option value="own">Мой питомник</option>
+          <option value="other">Другой питомник</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Название питомника</label>
+        <input class="edit-input" id="f-cattery-name" type="text" placeholder="Legend of Nevendaar">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Пол</label>
+        <select class="edit-input edit-select" id="f-gender">
+          <option value="female">♀ Кошка</option>
+          <option value="male">♂ Кот</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Дата рождения</label>
+        <input class="edit-input" id="f-dob" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">EMS-код</label>
+        <input class="edit-input" id="f-ems" type="text" placeholder="MCO a 22">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Статус</label>
+        <select class="edit-input edit-select" id="f-status">
+          <option value="active">Активный</option>
+          <option value="sterile">Кастрат</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-save" id="confirmAddPet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Добавить
+        </button>
+        <button class="btn btn-cancel" id="cancelAddPet">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ МОДАЛ: РОДОСЛОВНАЯ ═══ -->
+<div class="modal-overlay" id="pedigreeModal">
+  <div class="modal" style="width:760px">
+    <div class="modal-header">
+      <span class="modal-title" data-i18n="✦ Родословная">✦ Родословная</span>
+      <button class="modal-close" id="closePedigreeModal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div id="pedigreeContent"></div>
+  </div>
+</div>
+
+<!-- ═══ МОДАЛ: ФОТО ═══ -->
+<div class="modal-overlay" id="photoModal">
+  <div class="modal" style="padding:12px">
+    <img id="photoModalImg" src="" alt="Фото питомца"
+      style="max-width:80vw;max-height:75vh;border-radius:var(--radius-lg);display:block">
+    <button class="modal-close" id="closePhotoModal" style="margin-top:8px;margin-left:auto">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- ═══ МОДАЛ: ПОДТВЕРЖДЕНИЕ ═══ -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal confirm-modal-box">
+    <div class="confirm-icon" id="confirmModalIcon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+        <path d="M10 11v6M14 11v6"/>
+        <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+      </svg>
+    </div>
+    <div class="confirm-title" id="confirmModalTitle">Подтверждение</div>
+    <div class="confirm-text"  id="confirmModalText"></div>
+    <div class="confirm-actions">
+      <button class="btn btn-danger" id="confirmModalOk">Удалить</button>
+      <button class="btn btn-cancel" id="confirmModalCancel">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ МОДАЛ: ДОБАВИТЬ СОБЫТИЕ ═══ -->
+<div class="modal-overlay" id="addEventModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" data-i18n="✦ Добавить событие">✦ Добавить событие</span>
+      <button class="modal-close" id="closeAddEventModal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Тип события</label>
+        <select class="edit-input edit-select" id="f-event-type">
+          <option value="heat">Течка</option>
+          <option value="breeding">Вязка</option>
+          <option value="birth">Роды</option>
+          <option value="note">Заметка</option>
+          <option value="other">Другое</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Дата</label>
+        <div class="date-selects-row">
+          <select class="edit-input edit-select date-sel" id="f-event-day"></select>
+          <select class="edit-input edit-select date-sel" id="f-event-month">
+            <option value="1">Январь</option>
+            <option value="2">Февраль</option>
+            <option value="3">Март</option>
+            <option value="4">Апрель</option>
+            <option value="5">Май</option>
+            <option value="6">Июнь</option>
+            <option value="7">Июль</option>
+            <option value="8">Август</option>
+            <option value="9">Сентябрь</option>
+            <option value="10">Октябрь</option>
+            <option value="11">Ноябрь</option>
+            <option value="12">Декабрь</option>
+          </select>
+          <select class="edit-input edit-select date-sel" id="f-event-year"></select>
+        </div>
+      </div>
+      <div class="form-group full" id="f-event-custom-label-row">
+        <label class="form-label">Название события</label>
+        <input class="edit-input" id="f-event-custom-label" type="text"
+          placeholder="Например: прививка, осмотр, обработка...">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Питомец</label>
+        <select class="edit-input edit-select" id="f-event-pet">
+          <option value="">— Выбрать —</option>
+        </select>
+      </div>
+      <div class="form-group full" id="f-event-partner-row">
+        <label class="form-label">Партнёр (кот)</label>
+        <select class="edit-input edit-select" id="f-event-partner">
+          <option value="">— Из базы —</option>
+        </select>
+        <input class="edit-input" id="f-event-partner-name" type="text"
+          placeholder="Или введите имя вручную..." style="margin-top:8px">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Описание</label>
+        <textarea class="edit-input event-textarea" id="f-event-desc"
+          placeholder="Дополнительные заметки..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-save" id="confirmAddEvent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Добавить
+        </button>
+        <button class="btn btn-cancel" id="cancelAddEvent">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JS — ES6 модули -->
+<!-- ═══ МОДАЛ: ЭКСПОРТ ДАННЫХ ═══ -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal export-modal">
+    <div class="modal-header">
+      <span class="modal-title" data-i18n="✦ Экспорт данных">✦ Экспорт данных</span>
+      <button class="modal-close" id="closeExportModal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="export-body">
+
+      <!-- Что включить в отчёт -->
+      <div>
+        <div class="export-section-title" data-i18n="Включить в отчёт">Включить в отчёт</div>
+        <div class="export-checks">
+          <label class="export-check-item checked" id="exportCheckPets">
+            <input type="checkbox" id="exportPets" checked>
+            <span class="export-check-visual"></span>
+            <span class="export-check-icon">🐱</span>
+            <span class="export-check-label" data-i18n="Питомцы">Питомцы</span>
+            <span class="export-check-count" id="exportPetsCount">0</span>
+          </label>
+          <label class="export-check-item checked" id="exportCheckLitters">
+            <input type="checkbox" id="exportLitters" checked>
+            <span class="export-check-visual"></span>
+            <span class="export-check-icon">🐾</span>
+            <span class="export-check-label" data-i18n="Пометы">Пометы</span>
+            <span class="export-check-count" id="exportLittersCount">0</span>
+          </label>
+          <label class="export-check-item checked" id="exportCheckEvents">
+            <input type="checkbox" id="exportEvents" checked>
+            <span class="export-check-visual"></span>
+            <span class="export-check-icon">📅</span>
+            <span class="export-check-label" data-i18n="События журнала">События журнала</span>
+            <span class="export-check-count" id="exportEventsCount">0</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Формат файла -->
+      <div>
+        <div class="export-section-title" data-i18n="Формат файла">Формат файла</div>
+        <div class="settings-toggle-group export-fmt-group" id="exportFormatToggle">
+          <button class="stoggle-btn active" data-value="txt">.TXT</button>
+          <button class="stoggle-btn" data-value="md">.MD</button>
+          <button class="stoggle-btn" data-value="html">.HTML</button>
+          <button class="stoggle-btn" data-value="zip">.ZIP</button>
+        </div>
+      </div>
+
+      <!-- Кнопка -->
+      <div class="export-actions">
+        <button class="btn btn-primary" id="confirmExportBtn">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span data-i18n="Создать отчёт">Создать отчёт</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ МОДАЛ: НАСТРОЙКИ ═══ -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal settings-modal">
+    <div class="modal-header">
+      <span class="modal-title" data-i18n="⚙ Настройки">⚙ Настройки</span>
+      <button class="modal-close" id="closeSettingsModal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="settings-body">
+
+      <!-- Секция: Внешний вид -->
+      <div class="settings-section">
+        <div class="settings-section-title" data-i18n="Внешний вид">Внешний вид</div>
+
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label" data-i18n="Тема интерфейса">Тема интерфейса</div>
+            <div class="settings-row-desc" data-i18n="Stellar — звёздная космическая · Dark — тёмная · Light — светлая">Stellar — звёздная космическая · Dark — тёмная · Light — светлая</div>
+          </div>
+          <div class="settings-toggle-group" id="themeToggle">
+            <button class="stoggle-btn active" data-value="stellar">
+              <svg viewBox="0 0 12 12" width="10" height="10" fill="currentColor">
+                <circle cx="6" cy="6" r="1.2"/>
+                <circle cx="2" cy="2" r="0.7"/><circle cx="10" cy="3" r="0.5"/>
+                <circle cx="3" cy="9" r="0.5"/><circle cx="10" cy="9" r="0.7"/>
+              </svg>
+              Stellar
+            </button>
+            <button class="stoggle-btn" data-value="dark">
+              <svg viewBox="0 0 12 12" width="10" height="10" fill="currentColor">
+                <path d="M9 6A4 4 0 1 1 6 2.1 3 3 0 0 0 9 6z"/>
+              </svg>
+              Dark
+            </button>
+            <button class="stoggle-btn" data-value="light">
+              <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.2">
+                <circle cx="6" cy="6" r="2.2"/>
+                <line x1="6" y1="1" x2="6" y2="2.2"/><line x1="6" y1="9.8" x2="6" y2="11"/>
+                <line x1="1" y1="6" x2="2.2" y2="6"/><line x1="9.8" y1="6" x2="11" y2="6"/>
+              </svg>
+              Light
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Секция: Журнал -->
+      <div class="settings-section">
+        <div class="settings-section-title" data-i18n="Журнал">Журнал</div>
+
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label" data-i18n="Стиль текущей даты в календаре">Стиль текущей даты в календаре</div>
+            <div class="settings-row-desc" data-i18n="Как подсвечивается сегодняшний день">Как подсвечивается сегодняшний день</div>
+          </div>
+          <div class="settings-toggle-group" id="calendarTodayStyleToggle">
+            <button class="stoggle-btn active" data-value="vignette">
+              <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.2">
+                <rect x="1" y="1" width="10" height="10" rx="2"/>
+                <rect x="3" y="3" width="6" height="6" rx="1" opacity="0.5"/>
+              </svg>
+              Виньетка
+            </button>
+            <button class="stoggle-btn" data-value="dot">
+              <svg viewBox="0 0 12 12" width="10" height="10">
+                <circle cx="6" cy="6" r="3.5" fill="currentColor"/>
+              </svg>
+              Точка
+            </button>
+            <button class="stoggle-btn" data-value="galaxy">
+              <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.2">
+                <ellipse cx="6" cy="6" rx="5" ry="2.2"/>
+                <circle cx="6" cy="6" r="1.2" fill="currentColor" stroke="none"/>
+              </svg>
+              Галактика
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Секция: Опасная зона -->
+      <div class="danger-zone">
+        <div class="danger-zone-inner">
+          <div class="danger-zone-header" data-i18n="☢ Опасная зона">☢ Опасная зона</div>
+          <div class="danger-zone-row">
+            <div class="settings-row-info">
+              <div class="settings-row-label danger-label" data-i18n="Сбросить все данные">Сбросить все данные</div>
+              <div class="settings-row-desc" data-i18n="Удалит всех питомцев, помёты, журнал и фотографии. Восстановить невозможно.">Удалит всех питомцев, помёты, журнал и фотографии. Восстановить невозможно.</div>
+            </div>
+            <button class="btn-danger-zone" id="resetAllDataBtn" data-i18n="☢ Сбросить">☢ Сбросить</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ МОДАЛ: ДОБАВИТЬ ПОМЁТ ═══ -->
+<div class="modal-overlay" id="addLitterModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" data-i18n="✦ Добавить помёт">✦ Добавить помёт</span>
+      <button class="modal-close" id="closeAddLitterModal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label class="form-label">Название помёта</label>
+        <input class="edit-input" id="f-litter-title" type="text" placeholder="Например: Помёт A, Помёт «Звёзды»...">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Дата рождения</label>
+        <div class="date-selects-row">
+          <select class="edit-input edit-select date-sel" id="f-litter-dob-day"></select>
+          <select class="edit-input edit-select date-sel" id="f-litter-dob-month">
+            <option value="1">Январь</option><option value="2">Февраль</option>
+            <option value="3">Март</option><option value="4">Апрель</option>
+            <option value="5">Май</option><option value="6">Июнь</option>
+            <option value="7">Июль</option><option value="8">Август</option>
+            <option value="9">Сентябрь</option><option value="10">Октябрь</option>
+            <option value="11">Ноябрь</option><option value="12">Декабрь</option>
+          </select>
+          <select class="edit-input edit-select date-sel" id="f-litter-dob-year"></select>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Мать (кошка)</label>
+        <select class="edit-input edit-select" id="f-litter-mother">
+          <option value="">— Выбрать кошку —</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Отец (кот)</label>
+        <select class="edit-input edit-select" id="f-litter-father">
+          <option value="">— Из базы —</option>
+        </select>
+        <input class="edit-input" id="f-litter-father-name" type="text"
+          placeholder="Или введите имя вручную..." style="margin-top:8px">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Заметки</label>
+        <textarea class="edit-input event-textarea" id="f-litter-notes"
+          placeholder="Особенности помёта, условия и т.д..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-save" id="confirmAddLitter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Добавить
+        </button>
+        <button class="btn btn-cancel" id="cancelAddLitter">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ МОДАЛ: КОТЁНОК (добавить / редактировать) ═══ -->
+<div class="modal-overlay" id="kittenModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="kittenModalTitle">✦ Добавить котёнка</span>
+      <button class="modal-close" id="closeKittenModal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label class="form-label">Имя</label>
+        <input class="edit-input" id="f-kitten-name" type="text" placeholder="Имя котёнка (можно оставить пустым)">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Пол</label>
+        <select class="edit-input edit-select" id="f-kitten-gender">
+          <option value="female">♀ Кошка</option>
+          <option value="male">♂ Кот</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Вес при рождении (г)</label>
+        <input class="edit-input" id="f-kitten-weight" type="number" placeholder="Например: 120">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Дата рождения</label>
+        <div class="date-selects-row">
+          <select class="edit-input edit-select date-sel" id="f-kitten-dob-day"></select>
+          <select class="edit-input edit-select date-sel" id="f-kitten-dob-month">
+            <option value="1">Январь</option><option value="2">Февраль</option>
+            <option value="3">Март</option><option value="4">Апрель</option>
+            <option value="5">Май</option><option value="6">Июнь</option>
+            <option value="7">Июль</option><option value="8">Август</option>
+            <option value="9">Сентябрь</option><option value="10">Октябрь</option>
+            <option value="11">Ноябрь</option><option value="12">Декабрь</option>
+          </select>
+          <select class="edit-input edit-select date-sel" id="f-kitten-dob-year"></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">EMS-код окраса</label>
+        <input class="edit-input" id="f-kitten-ems" type="text" placeholder="Например: MCO a 22">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Тип шерсти</label>
+        <select class="edit-input edit-select" id="f-kitten-fur">
+          <option value="">— Не указан —</option>
+          <option value="шелковистая">Шелковистая</option>
+          <option value="мягкая">Мягкая</option>
+          <option value="жесткая">Жёсткая</option>
+          <option value="очень мягкая">Очень мягкая</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-save" id="confirmKittenBtn" data-mode="add" data-kidx="">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Сохранить
+        </button>
+        <button class="btn btn-cancel" id="cancelKittenBtn">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JSZip для экспорта в .zip -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+<script type="module" src="./js/main.js?v=19"></script>
+
+</body>
+</html>

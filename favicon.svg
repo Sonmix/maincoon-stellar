@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="60%" r="55%">
+      <stop offset="0%" stop-color="#0d1a3a"/>
+      <stop offset="100%" stop-color="#050816"/>
+    </radialGradient>
+    <radialGradient id="eyeL" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#80e8ff"/>
+      <stop offset="100%" stop-color="#3fd2ff"/>
+    </radialGradient>
+    <radialGradient id="eyeR" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#80e8ff"/>
+      <stop offset="100%" stop-color="#3fd2ff"/>
+    </radialGradient>
+    <filter id="glowEye" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="0.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowOuter" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Фон с закруглением -->
+  <rect width="32" height="32" rx="7" fill="url(#bgGlow)"/>
+
+  <!-- Тонкая рамка -->
+  <rect width="32" height="32" rx="7" fill="none" stroke="#3fd2ff" stroke-width="0.6" opacity="0.35"/>
+
+  <!-- Звёздочка правый верхний угол -->
+  <g filter="url(#glowOuter)">
+    <path d="M25.5 4.5 L26.15 6.3 L28 6.3 L26.6 7.4 L27.1 9.2 L25.5 8.1 L23.9 9.2 L24.4 7.4 L23 6.3 L24.85 6.3 Z"
+      fill="#3fd2ff" opacity="0.9"/>
+  </g>
+
+  <!-- Маленькая звёздочка левый верхний -->
+  <circle cx="6" cy="6" r="0.7" fill="#3fd2ff" opacity="0.6"/>
+  <circle cx="8.5" cy="4" r="0.4" fill="#8a4fff" opacity="0.7"/>
+
+  <!-- Уши кота -->
+  <path d="M9 16 L7 9 L13.5 14 Z" fill="#070d1e" stroke="#3fd2ff" stroke-width="0.9" stroke-linejoin="round"/>
+  <path d="M23 16 L25 9 L18.5 14 Z" fill="#070d1e" stroke="#3fd2ff" stroke-width="0.9" stroke-linejoin="round"/>
+  <!-- Внутренность ушей -->
+  <path d="M9.2 15 L8 10.5 L12.5 14.2 Z" fill="#1a2a50" opacity="0.8"/>
+  <path d="M22.8 15 L24 10.5 L19.5 14.2 Z" fill="#1a2a50" opacity="0.8"/>
+
+  <!-- Голова — основа -->
+  <ellipse cx="16" cy="19.5" rx="9" ry="7.5" fill="#0a1530" stroke="#3fd2ff" stroke-width="0.7" opacity="1"/>
+
+  <!-- Блик на голове -->
+  <ellipse cx="13" cy="15" rx="3" ry="1.5" fill="white" opacity="0.04" transform="rotate(-15 13 15)"/>
+
+  <!-- Глаза — glow-ореол -->
+  <ellipse cx="12.5" cy="18.5" rx="3" ry="2.2" fill="#3fd2ff" opacity="0.15" filter="url(#glowEye)"/>
+  <ellipse cx="19.5" cy="18.5" rx="3" ry="2.2" fill="#3fd2ff" opacity="0.15" filter="url(#glowEye)"/>
+
+  <!-- Глаза — форма -->
+  <ellipse cx="12.5" cy="18.5" rx="2.4" ry="1.8" fill="url(#eyeL)" filter="url(#glowEye)"/>
+  <ellipse cx="19.5" cy="18.5" rx="2.4" ry="1.8" fill="url(#eyeR)" filter="url(#glowEye)"/>
+
+  <!-- Зрачки (вертикальные) -->
+  <ellipse cx="12.5" cy="18.5" rx="0.7" ry="1.5" fill="#050816"/>
+  <ellipse cx="19.5" cy="18.5" rx="0.7" ry="1.5" fill="#050816"/>
+
+  <!-- Блики в глазах -->
+  <circle cx="11.8" cy="17.7" r="0.45" fill="white" opacity="0.7"/>
+  <circle cx="18.8" cy="17.7" r="0.45" fill="white" opacity="0.7"/>
+
+  <!-- Нос -->
+  <path d="M15.2 21.5 L16 22.4 L16.8 21.5 Z" fill="#8a4fff" opacity="0.9"/>
+
+  <!-- Усы — левые -->
+  <line x1="7" y1="21" x2="13" y2="21.8" stroke="#3fd2ff" stroke-width="0.4" opacity="0.4"/>
+  <line x1="7" y1="22.5" x2="13" y2="22.2" stroke="#3fd2ff" stroke-width="0.4" opacity="0.3"/>
+
+  <!-- Усы — правые -->
+  <line x1="25" y1="21" x2="19" y2="21.8" stroke="#3fd2ff" stroke-width="0.4" opacity="0.4"/>
+  <line x1="25" y1="22.5" x2="19" y2="22.2" stroke="#3fd2ff" stroke-width="0.4" opacity="0.3"/>
+</svg>

@@ -1,0 +1,21 @@
+# Claude Code — внутренние файлы ИИ-ассистента
+.claude/
+CLAUDE.md
+
+# Внутренняя документация
+docs/
+
+# Тесты
+test/
+
+# Мусор Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Мусор macOS
+.DS_Store
+
+# Мусор редакторов
+*.swp
+*~

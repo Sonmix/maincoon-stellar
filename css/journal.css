@@ -1,0 +1,721 @@
+/* ═══════════════════════════════════════════════
+   JOURNAL — Блок «Журнал»
+   Календарь физиологических событий
+═══════════════════════════════════════════════ */
+
+/* ── Анимация появления секций ── */
+@keyframes journalSectionIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Основной контейнер журнала ── */
+.journal-panel {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px 16px;
+  gap: 16px;
+  overflow: hidden;
+}
+
+/* ── Шапка: навигация по месяцам + статистика ── */
+.journal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.journal-month-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative; /* для пикера */
+}
+
+.journal-month-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t-base);
+  flex-shrink: 0;
+}
+.journal-month-btn svg { width: 16px; height: 16px; }
+.journal-month-btn:hover {
+  border-color: var(--cyan-dim);
+  color: var(--cyan);
+  background: var(--cyan-glow-sm);
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+.journal-month-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(63,210,255,0.3);
+  min-width: 200px;
+  text-align: center;
+  user-select: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  transition: background var(--t-base), color var(--t-base);
+}
+.journal-month-title:hover {
+  background: var(--cyan-glow-sm);
+  color: var(--cyan);
+}
+.journal-month-title.picker-open {
+  background: var(--cyan-glow);
+  color: var(--cyan);
+}
+
+/* ── Пикер месяца/года ── */
+.month-picker {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  background: var(--bg-card);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow:
+    0 0 40px rgba(63,210,255,0.12),
+    0 16px 48px rgba(0,0,0,0.6);
+  width: 260px;
+}
+/* Верхняя линия пикера */
+.month-picker::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 16px; right: 16px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--violet), transparent);
+  opacity: 0.5;
+}
+
+.picker-year-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.picker-year-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t-base);
+  flex-shrink: 0;
+}
+.picker-year-btn svg { width: 14px; height: 14px; }
+.picker-year-btn:hover {
+  border-color: var(--cyan-dim);
+  color: var(--cyan);
+  background: var(--cyan-glow-sm);
+}
+
+.picker-year-label {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  min-width: 60px;
+  text-align: center;
+}
+
+.picker-months {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.picker-month-btn {
+  padding: 7px 4px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--t-base);
+}
+.picker-month-btn:hover {
+  background: var(--cyan-glow-sm);
+  color: var(--cyan);
+  border-color: rgba(63,210,255,0.2);
+}
+.picker-month-btn.current-month {
+  background: var(--cyan-glow);
+  color: var(--cyan);
+  border-color: var(--cyan-dim);
+}
+
+.journal-header-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-height: 32px; /* стабилизирует высоту шапки */
+}
+
+.journal-stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.journal-stat-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Тело журнала ── */
+.journal-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 16px;
+  overflow: hidden;
+}
+
+/* ── Секция календаря ── */
+.journal-calendar-section {
+  flex: 1.5;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(13,22,48,0.5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Верхняя линия секции */
+.journal-calendar-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--violet), transparent);
+  opacity: 0.4;
+}
+
+/* ── Заголовки дней недели ── */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  flex-shrink: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 4px 0;
+}
+.calendar-weekday.weekend {
+  color: rgba(138,79,255,0.55);
+}
+
+/* ── Сетка дней ── */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Ячейка дня ── */
+.calendar-day {
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 3px 4px;
+  gap: 4px;
+  transition: background var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.calendar-day:hover:not(.other-month) {
+  background: var(--cyan-glow-sm);
+  border-color: rgba(63,210,255,0.15);
+}
+
+.calendar-day.other-month {
+  opacity: 0.2;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ═══ Сегодняшняя дата — 3 режима через body[data-today] ═══ */
+
+/* Число всегда cyan */
+.calendar-day.today .day-number {
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+/* Псевдоэлементы — по умолчанию скрыты */
+.calendar-day.today::before,
+.calendar-day.today::after { content: none; }
+
+/* ── Режим 2: Точка ── */
+body[data-today="dot"] .calendar-day.today::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 3px 1px #fff, 0 0 7px 2px var(--cyan), 0 0 14px 4px rgba(63,210,255,0.7);
+  pointer-events: none;
+}
+
+/* ── Режим 2: Галактика ── */
+body[data-today="galaxy"] .calendar-day.today::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 78%;
+  height: 52%;
+  transform: translate(-50%, -50%) rotate(-22deg);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center,
+    rgba(255,252,215,1.0)  0%,
+    rgba(200,240,255,0.85) 12%,
+    rgba(63,210,255,0.65)  28%,
+    rgba(63,210,255,0.30)  50%,
+    rgba(138,79,255,0.18)  68%,
+    rgba(138,79,255,0.06)  82%,
+    transparent            100%
+  );
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+/* ── Режим 3: Виньетка (DEFAULT) ── */
+body[data-today="vignette"] .calendar-day.today,
+body:not([data-today]) .calendar-day.today {
+  border-color: rgba(63,210,255,0.35);
+  box-shadow:
+    0 0 18px rgba(63,210,255,0.18),
+    inset 0 0 12px rgba(63,210,255,0.10);
+  background: rgba(63,210,255,0.04);
+}
+
+/* Выбранный день */
+.calendar-day.selected {
+  background: rgba(63,210,255,0.1);
+  border-color: rgba(63,210,255,0.35);
+  box-shadow: 0 0 16px rgba(63,210,255,0.12), inset 0 0 8px rgba(63,210,255,0.05);
+}
+.calendar-day.selected .day-number {
+  color: var(--cyan);
+}
+
+/* День с событиями */
+.calendar-day.has-events {
+  background: rgba(255,255,255,0.025);
+}
+
+.day-number {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+/* Точки событий */
+.day-events-dots {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 9px;
+}
+
+.event-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.event-dot.heat           { background: var(--violet); box-shadow: 0 0 6px 1px rgba(138,79,255,0.8); }
+.event-dot.breeding       { background: var(--cyan);   box-shadow: 0 0 6px 1px rgba(63,210,255,0.8); }
+.event-dot.expected-birth { background: var(--orange); box-shadow: 0 0 6px 1px rgba(255,140,66,0.8); }
+.event-dot.birth          { background: var(--emerald);box-shadow: 0 0 6px 1px rgba(40,217,138,0.8); }
+.event-dot.note  { background: var(--text-secondary); box-shadow: 0 0 4px rgba(122,141,184,0.5); }
+.event-dot.other { background: var(--gold); box-shadow: 0 0 6px 1px rgba(255,215,0,0.7); }
+
+.day-overflow {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0;
+}
+
+/* ── Секция событий (правая панель) ── */
+.journal-events-section {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(13,22,48,0.5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Верхняя линия секции */
+.journal-events-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--violet), var(--cyan), transparent);
+  opacity: 0.4;
+}
+
+.journal-events-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.journal-events-title {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-add-event {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t-base);
+  flex-shrink: 0;
+}
+.btn-add-event svg { width: 14px; height: 14px; }
+.btn-add-event:hover {
+  border-color: var(--cyan-dim);
+  color: var(--cyan);
+  background: var(--cyan-glow-sm);
+  box-shadow: 0 0 10px var(--cyan-glow);
+}
+
+/* ── Кнопка «Удалить все события дня» ── */
+.btn-delete-all-events {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 68, 102, 0.35);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t-base);
+  flex-shrink: 0;
+  /* Красно-жёлтый ядовитый градиент на иконке */
+  color: #ff8c42;
+  filter: drop-shadow(0 0 4px rgba(255, 68, 102, 0.4));
+}
+.btn-delete-all-events svg { width: 14px; height: 14px; }
+.btn-delete-all-events:hover {
+  border-color: var(--red);
+  color: #ffdd00;
+  background: rgba(255, 68, 102, 0.12);
+  box-shadow: 0 0 12px rgba(255, 68, 102, 0.4), 0 0 4px rgba(255, 221, 0, 0.3);
+  filter: drop-shadow(0 0 6px rgba(255, 68, 102, 0.7));
+}
+
+/* ── Список событий ── */
+.journal-events-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.journal-events-list::-webkit-scrollbar       { width: 3px; }
+.journal-events-list::-webkit-scrollbar-track { background: transparent; }
+.journal-events-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── Карточка события ── */
+.event-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px 10px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: border-color var(--t-base), background var(--t-base);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Цветная боковая полоска */
+.event-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+.event-card.heat::before           { background: var(--violet); box-shadow: 2px 0 8px var(--violet-glow); }
+.event-card.breeding::before       { background: var(--cyan);   box-shadow: 2px 0 8px var(--cyan-glow); }
+.event-card.expected-birth::before { background: var(--orange); box-shadow: 2px 0 8px rgba(255,140,66,0.3); }
+.event-card.birth::before          { background: var(--emerald);box-shadow: 2px 0 8px var(--emerald-glow); }
+.event-card.note::before  { background: var(--text-dim); }
+.event-card.other::before { background: var(--gold); box-shadow: 2px 0 8px rgba(255,215,0,0.3); }
+
+.event-card:hover {
+  border-color: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+}
+
+.event-card-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Бейдж типа события */
+.event-type-badge {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.event-type-badge.heat {
+  color: var(--violet);
+  border-color: rgba(138,79,255,0.35);
+  background: rgba(138,79,255,0.1);
+}
+.event-type-badge.breeding {
+  color: var(--cyan);
+  border-color: rgba(63,210,255,0.3);
+  background: rgba(63,210,255,0.08);
+}
+.event-type-badge.expected-birth {
+  color: var(--orange);
+  border-color: rgba(255,140,66,0.35);
+  background: rgba(255,140,66,0.08);
+}
+.event-type-badge.birth {
+  color: var(--emerald);
+  border-color: rgba(40,217,138,0.3);
+  background: rgba(40,217,138,0.08);
+}
+.event-type-badge.note {
+  color: var(--text-secondary);
+  border-color: var(--border);
+  background: transparent;
+}
+.event-type-badge.other {
+  color: var(--gold);
+  border-color: rgba(255,215,0,0.3);
+  background: rgba(255,215,0,0.07);
+}
+
+/* Дата на карточке (при просмотре всего месяца) */
+.event-card-date {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.event-delete-btn {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color var(--t-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+.event-delete-btn:hover { color: var(--red); }
+.event-delete-btn svg { width: 12px; height: 12px; }
+
+.event-card-pet {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-card-desc {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Пустое состояние ── */
+.events-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 10px;
+  opacity: 0.35;
+  padding: 20px;
+  text-align: center;
+}
+.events-empty svg {
+  width: 36px;
+  height: 36px;
+  color: var(--cyan);
+}
+.events-empty p {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ── Форма добавления события (модал) ── */
+
+/* Скрытые строки (партнёр, своё название) */
+#f-event-partner-row,
+#f-event-custom-label-row {
+  display: none;
+}
+#f-event-partner-row.visible,
+#f-event-custom-label-row.visible {
+  display: block;
+}
+
+/* Textarea описания */
+.event-textarea {
+  resize: none;
+  height: 72px;
+}
+
+/* Модал добавления события — без скролла */
+#addEventModal .modal {
+  width: 520px;
+  overflow: visible;
+  max-height: none;
+}
+
+/* ── Выбор даты через 3 select (день / месяц / год) ── */
+.date-selects-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px;
+  gap: 6px;
+}
+.date-selects-row .date-sel {
+  padding-left: 8px;
+  padding-right: 4px;
+  text-align: center;
+}

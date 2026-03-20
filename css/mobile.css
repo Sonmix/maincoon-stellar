@@ -1,0 +1,312 @@
+/* ═══════════════════════════════════════════════
+   MOBILE — Адаптивные стили для мобильных устройств
+   Breakpoints: ≤768px (планшет/мобила), ≤480px (мобила)
+═══════════════════════════════════════════════ */
+
+/* ────────────────────────────────────────────
+   ПЛАНШЕТ / МОБИЛА — до 768px
+──────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* ── Header: убрать nav, оставить лого + иконки ── */
+  .header-nav {
+    display: none !important;
+  }
+
+  #header {
+    padding: 0 14px;
+    gap: 8px;
+  }
+
+  /* Немного уменьшить логотип */
+  .logo-icon { width: 30px; height: 30px; }
+  .logo-main { font-size: 11px; }
+  .logo-sub  { font-size: 8px; letter-spacing: 0.2em; }
+
+  /* Кнопки экспорт/настройки */
+  .export-btn,
+  .settings-btn {
+    width: 34px;
+    height: 34px;
+    padding: 8px;
+  }
+
+  /* ── Footer: основная навигация ── */
+  #footer {
+    height: auto;
+    min-height: var(--footer-h);
+    padding: 6px 10px;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: space-between;
+  }
+
+  .footer-nav-tabs {
+    flex: 1;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+
+  .footer-tab {
+    padding: 5px 10px;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  .lang-switcher {
+    position: static;
+    flex-shrink: 0;
+  }
+
+  /* ── Питомник: колонка вместо строки ── */
+  .cattery-panel {
+    flex-direction: column !important;
+    overflow: hidden;
+  }
+
+  .sidebar {
+    width: 100% !important;
+    height: auto;
+    max-height: 38vh;
+    min-height: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+
+  /* Поиск и фильтры компактнее */
+  .sidebar-search { padding: 10px 12px 6px; }
+  .filter-chips   { padding: 0 12px 8px; gap: 4px; }
+  .chip           { padding: 4px 10px; font-size: 10px; }
+
+  .sidebar-actions {
+    padding: 8px 12px;
+    gap: 6px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .sidebar-actions .btn {
+    flex: 1;
+    min-width: 120px;
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+
+  .detail-panel {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  /* ── Пометы: вертикально ── */
+  #panel-litters {
+    flex-direction: column !important;
+  }
+
+  .litters-sidebar {
+    width: 100% !important;
+    height: auto;
+    max-height: 35vh;
+    min-height: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow-y: auto;
+  }
+
+  .litters-sidebar-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px;
+  }
+  .litters-sidebar-actions .btn {
+    flex: 1;
+    min-width: 100px;
+    font-size: 11px;
+  }
+
+  .litters-detail {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  /* ── Модалы: полноэкранные ── */
+  .modal-overlay .modal {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 5vh auto;
+  }
+
+  /* ── Форма добавления питомца ── */
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .form-group.full { grid-column: 1; }
+
+  /* ── Прогноз вязки ── */
+  .breeding-pair {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+  .breeding-connector {
+    justify-content: center;
+  }
+
+  /* ── Журнал ── */
+  .journal-panel {
+    flex-direction: column !important;
+  }
+
+  .journal-left {
+    width: 100% !important;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .calendar-grid .calendar-cell {
+    min-height: 40px;
+    font-size: 11px;
+  }
+
+  /* ── Карта поколений ── */
+  .gen-toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px;
+  }
+
+  .gen-toolbar-title {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+  }
+
+  .gen-toolbar-actions {
+    gap: 4px;
+  }
+
+  .gen-toolbar .gen-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  /* ── Настройки ── */
+  .settings-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .settings-toggle-group {
+    flex-wrap: wrap;
+  }
+
+  /* ── Breeding preset banner ── */
+  .breeding-preset-banner {
+    width: calc(100% - 40px);
+    left: 20px;
+    transform: none;
+    top: 10px;
+    font-size: 11px;
+  }
+
+  /* ── Родословная ── */
+  #pedigreeModal .modal {
+    width: 98vw !important;
+    max-width: 98vw !important;
+    overflow-x: auto;
+  }
+
+}
+
+/* ────────────────────────────────────────────
+   МОБИЛА — до 480px
+──────────────────────────────────────────── */
+@media (max-width: 480px) {
+
+  /* ── Логотип ещё компактнее ── */
+  .logo-text { display: none; }
+  .logo-icon { width: 32px; height: 32px; }
+
+  #header { padding: 0 10px; }
+
+  /* ── Footer табы: только иконки / короткие тексты ── */
+  .footer-tab {
+    padding: 4px 8px;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Сайдбар: чуть меньше ── */
+  .sidebar {
+    max-height: 32vh;
+  }
+
+  /* ── Карточки питомцев: компактнее ── */
+  .pet-card {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .pet-avatar { width: 38px; height: 38px; }
+  .pet-name   { font-size: 12px; }
+  .pet-meta   { font-size: 10px; }
+  .cattery-badge { font-size: 7px; padding: 2px 6px; }
+
+  /* ── Модальные окна ── */
+  .modal-header { padding: 12px 14px; }
+  .modal-title  { font-size: 12px; }
+
+  /* ── Кнопки в форме ── */
+  .form-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-actions .btn { width: 100%; justify-content: center; }
+
+  /* ── Кнопки экспорт / настройки ── */
+  .export-btn,
+  .settings-btn {
+    width: 30px;
+    height: 30px;
+    padding: 6px;
+  }
+
+  /* ── Тулбар поколений ── */
+  .gen-toolbar-right {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* ── Пометы: список помётов маленький ── */
+  .litters-sidebar {
+    max-height: 28vh;
+  }
+
+  /* ── Журнал: календарные ячейки ── */
+  .calendar-grid .calendar-cell {
+    min-height: 32px;
+    font-size: 10px;
+  }
+  .calendar-grid { gap: 1px; }
+
+  /* ── Detail панель: отступы ── */
+  .detail-content { padding: 12px; }
+  .subblock       { padding: 12px; }
+
+}
+
+/* ────────────────────────────────────────────
+   Светлая тема — мобильные корректировки
+──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  body[data-theme="light"] .sidebar {
+    border-bottom-color: rgba(0,0,0,0.1);
+  }
+  body[data-theme="light"] .litters-sidebar {
+    border-bottom-color: rgba(0,0,0,0.1);
+  }
+}

@@ -1,0 +1,575 @@
+/* ═══════════════════════════════════════════════
+   LITTERS — Блок «Пометы»
+   Журнал помётов: сайдбар, карточки котят, статусы
+═══════════════════════════════════════════════ */
+
+/* ── Сайдбар помётов ── */
+.litters-sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(7,13,30,0.7);
+  border-right: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: relative;
+  z-index: 10;
+}
+
+.litters-sidebar-header {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.litters-year-filter {
+  width: 100%;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--t-base), box-shadow var(--t-base);
+}
+.litters-year-filter:focus {
+  border-color: var(--cyan-dim);
+  box-shadow: 0 0 0 2px var(--cyan-glow-sm);
+}
+.litters-year-filter option { background: var(--bg-mid); }
+
+/* ── Список помётов ── */
+.litter-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.litter-list::-webkit-scrollbar { width: 4px; }
+.litter-list::-webkit-scrollbar-track { background: transparent; }
+.litter-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── Карточка помёта в сайдбаре ── */
+.litter-card {
+  padding: 10px 12px;
+  background: rgba(13,22,48,0.6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--t-base);
+  position: relative;
+  overflow: hidden;
+}
+.litter-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--violet);
+  opacity: 0;
+  border-radius: var(--radius) 0 0 var(--radius);
+  transition: opacity var(--t-base);
+}
+.litter-card:hover {
+  background: rgba(13,22,48,0.85);
+  border-color: rgba(63,210,255,0.2);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+.litter-card:hover::before { opacity: 0.5; }
+.litter-card.selected {
+  background: rgba(63,210,255,0.07);
+  border-color: var(--cyan-dim);
+  box-shadow: 0 0 16px var(--cyan-glow), inset 0 0 20px rgba(63,210,255,0.04);
+}
+.litter-card.selected::before { opacity: 1; background: var(--cyan); }
+
+.litter-card-title {
+  font-family: var(--font-display);
+  font-size: 9px;
+  color: var(--violet);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin-bottom: 3px;
+}
+.litter-card-date {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.03em;
+  margin-bottom: 5px;
+}
+.litter-card.selected .litter-card-date { color: var(--cyan); }
+
+.litter-card-pair {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.litter-pair-female { color: var(--violet); }
+.litter-pair-male   { color: #4a9eff; }
+
+.litter-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.litter-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: rgba(138,79,255,0.1);
+  border: 1px solid rgba(138,79,255,0.22);
+  border-radius: 10px;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--violet);
+}
+
+/* ── Кнопки нижней части сайдбара ── */
+.litters-sidebar-actions {
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ── Правая панель ── */
+.litters-detail {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Empty state ── */
+.litters-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0.3;
+}
+.litters-empty svg {
+  width: 64px;
+  height: 64px;
+  color: var(--violet);
+  animation: float 4s ease-in-out infinite;
+}
+.litters-empty-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+}
+.litters-empty-sub {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ── Детальная панель помёта ── */
+.litter-detail-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px 24px 16px;
+  gap: 14px;
+  animation: tabPanelIn 0.25s ease-out;
+}
+
+/* ── Шапка помёта ── */
+.litter-detail-header {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.litter-detail-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--text-primary);
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 20px rgba(138,79,255,0.4);
+}
+.litter-detail-date-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+}
+.litter-detail-date-row svg { width: 12px; height: 12px; opacity: 0.6; }
+
+.litter-detail-parents {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.litter-parent-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.litter-parent-chip.female {
+  background: rgba(138,79,255,0.1);
+  border: 1px solid rgba(138,79,255,0.25);
+  color: var(--violet);
+}
+.litter-parent-chip.male {
+  background: rgba(74,158,255,0.1);
+  border: 1px solid rgba(74,158,255,0.25);
+  color: #4a9eff;
+}
+
+/* ── Статистика ── */
+.litter-stats {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.litter-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 14px;
+  background: rgba(13,22,48,0.7);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-width: 56px;
+  flex-shrink: 0;
+}
+.litter-stat-value {
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1;
+  color: var(--cyan);
+  text-shadow: 0 0 12px var(--cyan-glow);
+}
+.litter-stat-label {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+.litter-stat-item.stat-female .litter-stat-value { color: var(--violet); text-shadow: 0 0 12px var(--violet-glow); }
+.litter-stat-item.stat-male   .litter-stat-value { color: #4a9eff; text-shadow: 0 0 12px rgba(74,158,255,0.3); }
+.litter-stat-item.stat-stays  .litter-stat-value { color: var(--emerald); text-shadow: 0 0 12px var(--emerald-glow); }
+.litter-stat-item.stat-waiting .litter-stat-value { color: var(--orange); text-shadow: 0 0 12px rgba(255,140,66,0.25); }
+.litter-stat-item.stat-sold   .litter-stat-value { color: var(--text-secondary); text-shadow: none; }
+
+/* ── Разделитель ── */
+.litter-section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--violet), var(--cyan), transparent);
+  opacity: 0.2;
+  flex-shrink: 0;
+}
+
+/* ── Зона котят ── */
+.kittens-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+.kittens-area-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.kittens-area-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.kittens-grid-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+.kittens-grid-scroll::-webkit-scrollbar { width: 4px; }
+.kittens-grid-scroll::-webkit-scrollbar-track { background: transparent; }
+.kittens-grid-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.kittens-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding-bottom: 12px;
+}
+.kittens-empty-hint {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-dim);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+/* ── Карточка котёнка ── */
+.kitten-card {
+  background: rgba(13,22,48,0.65);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color var(--t-base), box-shadow var(--t-base);
+  position: relative;
+  overflow: hidden;
+}
+/* Верхняя полоска по полу */
+.kitten-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  opacity: 0.5;
+  transition: opacity var(--t-base);
+}
+.kitten-card.female::before { background: linear-gradient(90deg, var(--violet), transparent); }
+.kitten-card.male::before   { background: linear-gradient(90deg, #4a9eff, transparent); }
+.kitten-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+.kitten-card:hover::before { opacity: 1; }
+
+/* Статус — цветовая рамка */
+.kitten-card[data-status="waiting"] { border-color: rgba(255,140,66,0.2); }
+.kitten-card[data-status="stays"]   { border-color: rgba(40,217,138,0.2); }
+.kitten-card[data-status="sold"]    { border-color: rgba(61,79,114,0.12); opacity: 0.65; }
+
+/* Шапка карточки котёнка */
+.kitten-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.kitten-gender-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.kitten-gender-icon.female {
+  background: rgba(138,79,255,0.15);
+  color: var(--violet);
+  border: 1px solid rgba(138,79,255,0.3);
+  box-shadow: 0 0 8px var(--violet-glow);
+}
+.kitten-gender-icon.male {
+  background: rgba(74,158,255,0.15);
+  color: #4a9eff;
+  border: 1px solid rgba(74,158,255,0.3);
+  box-shadow: 0 0 8px rgba(74,158,255,0.2);
+}
+.kitten-card-actions { display: flex; gap: 4px; }
+.kitten-action-btn {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t-base);
+}
+.kitten-action-btn svg { width: 12px; height: 12px; pointer-events: none; }
+.kitten-action-btn:hover { border-color: var(--cyan-dim); color: var(--cyan); background: var(--cyan-glow-sm); }
+.kitten-action-btn.delete:hover { border-color: rgba(255,68,102,0.4); color: var(--red); background: var(--red-glow); }
+
+/* Имя котёнка */
+.kitten-name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kitten-noname {
+  color: var(--text-dim);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+/* Мета-строки */
+.kitten-meta { display: flex; flex-direction: column; gap: 3px; }
+.kitten-meta-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px;
+}
+.kitten-meta-label {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.kitten-meta-value {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+/* EMS-бейдж */
+.kitten-ems-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: rgba(138,79,255,0.1);
+  border: 1px solid rgba(138,79,255,0.2);
+  border-radius: 10px;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--violet);
+  letter-spacing: 0.05em;
+  align-self: flex-start;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Статус-блок */
+.kitten-status-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: auto;
+}
+.kitten-status-select {
+  width: 100%;
+  padding: 6px 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--t-base), box-shadow var(--t-base);
+}
+.kitten-status-select option { background: var(--bg-mid); }
+.kitten-status-select:focus { border-color: var(--cyan-dim); box-shadow: 0 0 0 2px var(--cyan-glow-sm); }
+
+/* Подсветка select по статусу */
+.kitten-card[data-status="waiting"] .kitten-status-select { border-color: rgba(255,140,66,0.3); color: var(--orange); }
+.kitten-card[data-status="stays"]   .kitten-status-select { border-color: rgba(40,217,138,0.3); color: var(--emerald); }
+.kitten-card[data-status="sold"]    .kitten-status-select { color: var(--text-dim); }
+
+/* Кнопка «В питомник» */
+.kitten-to-cattery-btn {
+  width: 100%;
+  padding: 6px 10px;
+  background: rgba(40,217,138,0.1);
+  border: 1px solid rgba(40,217,138,0.25);
+  border-radius: var(--radius-sm);
+  color: var(--emerald);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all var(--t-base);
+}
+.kitten-to-cattery-btn svg { width: 11px; height: 11px; }
+.kitten-to-cattery-btn:hover:not(.already-added) {
+  background: rgba(40,217,138,0.18);
+  box-shadow: 0 0 12px var(--emerald-glow);
+}
+.kitten-to-cattery-btn.already-added {
+  background: rgba(40,217,138,0.05);
+  border-color: rgba(40,217,138,0.12);
+  color: var(--text-dim);
+  cursor: default;
+}
+
+/* ── Заметки помёта ── */
+.litter-notes-block {
+  padding: 12px 16px;
+  background: rgba(13,22,48,0.5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  flex-shrink: 0;
+}
+.litter-notes-label {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.litter-notes-text {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}

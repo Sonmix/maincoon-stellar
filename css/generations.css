@@ -1,0 +1,438 @@
+/* ═══════════════════════════════════════════════
+   GENERATIONS — Блок «Карта поколений»
+   Maincoon Stellar v1
+═══════════════════════════════════════════════ */
+
+/* ── Панель ────────────────────────────────── */
+.generations-panel {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Тулбар ────────────────────────────────── */
+.gen-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  gap: 12px;
+  background: rgba(7, 13, 30, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.gen-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gen-toolbar-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: var(--cyan);
+  text-shadow: 0 0 12px var(--cyan-glow);
+}
+
+.gen-toolbar-title svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--cyan);
+  opacity: 0.8;
+}
+
+.gen-pet-count {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: rgba(63, 210, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2px 10px;
+  letter-spacing: 0.04em;
+}
+
+.gen-toolbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gen-ctrl-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: rgba(63, 210, 255, 0.06);
+  border: 1px solid rgba(63, 210, 255, 0.18);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--t-fast);
+  letter-spacing: 0.03em;
+}
+
+.gen-ctrl-btn svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+.gen-ctrl-btn:hover {
+  background: rgba(63, 210, 255, 0.12);
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan-glow-sm);
+}
+
+.gen-ctrl-btn:active {
+  transform: scale(0.97);
+}
+
+.gen-zoom-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  margin: 0 2px;
+}
+
+/* ── Canvas-обёртка ──────────────────────────  */
+.gen-canvas-wrap {
+  flex: 1;
+  overflow: hidden;
+  cursor: grab;
+  position: relative;
+  background: var(--bg-deep);
+  /* Тонкая сетка-паттерн */
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(63, 210, 255, 0.03) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(138, 79, 255, 0.03) 0%, transparent 60%);
+}
+
+.gen-canvas-wrap.is-panning {
+  cursor: grabbing;
+}
+
+.gen-canvas-wrap svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ── SVG-узлы (hover через CSS) ──────────────  */
+.gen-node {
+  transition: filter 0.2s ease;
+}
+
+.gen-node:hover .gen-node-rect {
+  stroke-width: 2.5;
+}
+
+.gen-node:hover .gen-node-glow {
+  opacity: 0.45 !important;
+}
+
+.gen-node.highlighted .gen-node-rect {
+  stroke-width: 2.5;
+}
+
+.gen-node.highlighted .gen-node-glow {
+  opacity: 0.5 !important;
+}
+
+.gen-node.dimmed {
+  opacity: 0.35;
+}
+
+.gen-edge {
+  transition: opacity 0.2s ease, stroke-width 0.2s ease;
+}
+
+.gen-edge.highlighted {
+  opacity: 0.9 !important;
+  stroke-width: 2.5 !important;
+}
+
+.gen-edge.dimmed {
+  opacity: 0.06 !important;
+}
+
+/* ── Тултип ────────────────────────────────── */
+.gen-node-tooltip {
+  position: absolute;
+  pointer-events: none;
+  z-index: 100;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  max-width: 220px;
+}
+
+.gen-node-tooltip.visible {
+  display: block;
+  opacity: 1;
+}
+
+.gen-tooltip-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(13, 22, 48, 0.92);
+  border: 1px solid rgba(63, 210, 255, 0.22);
+  border-radius: var(--radius);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 0 20px rgba(63, 210, 255, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.gen-tooltip-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid rgba(63, 210, 255, 0.2);
+}
+
+.gen-tooltip-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gen-tooltip-avatar {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(63, 210, 255, 0.08);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.gen-tooltip-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gen-tooltip-name {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.gen-tooltip-ems {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.gen-tooltip-cattery {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.gen-tooltip-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.gen-tooltip-age {
+  font-family: var(--font-ui);
+  font-size: 9.5px;
+  color: var(--text-dim);
+}
+
+.gen-tooltip-gender {
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* ── Легенда ───────────────────────────────── */
+.gen-legend {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 12px;
+  background: rgba(7, 13, 30, 0.82);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+
+.gen-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  color: var(--text-secondary);
+  letter-spacing: 0.03em;
+}
+
+.gen-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1.5px solid;
+  flex-shrink: 0;
+}
+
+.gen-legend-dot.gen-legend-cyan    { border-color: var(--cyan); background: rgba(63,210,255,0.12); }
+.gen-legend-dot.gen-legend-emerald { border-color: var(--emerald); background: rgba(40,217,138,0.12); }
+
+.gen-legend-line {
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  opacity: 0.7;
+}
+
+/* ── Пустое состояние ────────────────────────  */
+.gen-empty-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  pointer-events: none;
+}
+
+.gen-empty-icon {
+  width: 56px;
+  height: 56px;
+  color: var(--text-dim);
+  opacity: 0.5;
+  animation: float 3s ease-in-out infinite;
+}
+
+.gen-empty-title {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.gen-empty-sub {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* ── Zoom-подсказка ───────────────────────── */
+.gen-zoom-hint {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  font-family: var(--font-ui);
+  font-size: 9.5px;
+  color: var(--text-dim);
+  pointer-events: none;
+  letter-spacing: 0.04em;
+}
+
+/* ══════════════════════════════════════════════
+   ТЕМА: Light
+══════════════════════════════════════════════ */
+body[data-theme="light"] .gen-toolbar {
+  background: rgba(236, 232, 250, 0.85) !important;
+  border-bottom-color: rgba(70, 40, 160, 0.1) !important;
+}
+
+body[data-theme="light"] .gen-toolbar-title {
+  color: var(--violet) !important;
+  text-shadow: none !important;
+}
+
+body[data-theme="light"] .gen-toolbar-title svg {
+  stroke: var(--violet) !important;
+}
+
+body[data-theme="light"] .gen-pet-count {
+  background: rgba(92, 24, 192, 0.06) !important;
+  border-color: rgba(70, 40, 160, 0.15) !important;
+}
+
+body[data-theme="light"] .gen-ctrl-btn {
+  background: rgba(92, 24, 192, 0.05) !important;
+  border-color: rgba(70, 40, 160, 0.15) !important;
+  color: var(--text-secondary) !important;
+}
+
+body[data-theme="light"] .gen-ctrl-btn:hover {
+  background: rgba(92, 24, 192, 0.1) !important;
+  border-color: var(--violet) !important;
+  color: var(--violet) !important;
+}
+
+body[data-theme="light"] .gen-canvas-wrap {
+  background: var(--bg-surface) !important;
+}
+
+body[data-theme="light"] .gen-tooltip-inner {
+  background: rgba(253, 252, 255, 0.95) !important;
+  border-color: rgba(70, 40, 160, 0.2) !important;
+  box-shadow: 0 8px 24px rgba(28, 22, 56, 0.12) !important;
+}
+
+body[data-theme="light"] .gen-tooltip-name {
+  color: var(--text-primary) !important;
+}
+
+body[data-theme="light"] .gen-legend {
+  background: rgba(236, 232, 250, 0.9) !important;
+  border-color: rgba(70, 40, 160, 0.1) !important;
+}
+
+body[data-theme="light"] .gen-legend-item {
+  color: var(--text-secondary) !important;
+}
+
+/* ── Тема: Dark ────────────────────────────── */
+body[data-theme="dark"] .gen-toolbar {
+  background: rgba(12, 9, 30, 0.7) !important;
+}
+
+body[data-theme="dark"] .gen-canvas-wrap {
+  background: var(--bg-deep) !important;
+}

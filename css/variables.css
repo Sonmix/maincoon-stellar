@@ -1,0 +1,334 @@
+/* ═══════════════════════════════════════════════
+   CSS VARIABLES — COSMIC PALETTE
+   Maincoon Stellar — Design Tokens
+═══════════════════════════════════════════════ */
+
+/* ────────────────────────────────────────────────
+   ТЕМА: Dark — «Глубокий космос»
+   Насыщенные индиго-пурпурные глубины без звёзд.
+   Те же акценты, но теперь они буквально светятся
+   на этом бархатном тёмно-фиолетовом фоне.
+──────────────────────────────────────────────── */
+body[data-theme="dark"] {
+  --bg-deep:       #08061a;
+  --bg-mid:        #0e0b24;
+  --bg-surface:    #14102e;
+  --bg-card:       #1a1538;
+  --bg-card-hover: #201a42;
+
+  /* Glow-эффекты чуть интенсивнее на тёмно-фиолетовом */
+  --cyan-glow:     rgba(63,210,255,0.22);
+  --cyan-glow-sm:  rgba(63,210,255,0.11);
+  --emerald-glow:  rgba(40,217,138,0.18);
+  --violet-glow:   rgba(138,79,255,0.22);
+}
+body[data-theme="dark"] #starCanvas,
+body[data-theme="dark"] .nebula-layer { display: none; }
+
+/* Атмосфера — тонкий пурпурный туман через CSS */
+body[data-theme="dark"] #app {
+  background:
+    radial-gradient(ellipse 70% 55% at 15% 20%, rgba(100,30,200,0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 85% 80%, rgba(20,60,200,0.05) 0%, transparent 65%);
+}
+body[data-theme="dark"] header {
+  background: rgba(12,9,30,0.88) !important;
+  border-bottom-color: rgba(138,79,255,0.15) !important;
+  backdrop-filter: blur(24px) saturate(1.6) !important;
+}
+body[data-theme="dark"] footer {
+  background: rgba(9,7,22,0.92) !important;
+  border-top-color: rgba(138,79,255,0.1) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+
+/* ────────────────────────────────────────────────
+   ТЕМА: Light — «Рассвет на орбите»
+   Нежное перванш-лавандовое небо перед рассветом.
+   НЕ белый, НЕ серый — атмосферный, мягкий, живой.
+   Все акценты углублены для контраста на светлом.
+──────────────────────────────────────────────── */
+body[data-theme="light"] {
+  /* Фоны — перванш-лавандовый рассвет */
+  --bg-deep:       #e8e4f6;
+  --bg-mid:        #ece8f8;
+  --bg-surface:    #f3f1fb;
+  --bg-card:       #fdfcff;
+  --bg-card-hover: #f0eefb;
+
+  /* Текст — тёмный индиго, максимальный контраст */
+  --text-primary:  #1c1638;
+  --text-secondary:#4a3d6e;
+  --text-dim:      #8a7aaa;
+
+  /* Бордеры — тонкие индиго */
+  --border:        rgba(70,40,160,0.13);
+  --border-bright: rgba(70,40,160,0.32);
+
+  /* Акценты углублены для читаемости на светлом */
+  --cyan:          #0682b4;
+  --cyan-dim:      #055a88;
+  --cyan-glow:     rgba(6,130,180,0.14);
+  --cyan-glow-sm:  rgba(6,130,180,0.08);
+
+  --emerald:       #0b8850;
+  --emerald-dim:   #07633a;
+  --emerald-glow:  rgba(11,136,80,0.14);
+
+  --violet:        #5c18c0;
+  --violet-dim:    #3e0e88;
+  --violet-glow:   rgba(92,24,192,0.14);
+
+  --orange:        #bf5800;
+  --red:           #c01040;
+  --red-glow:      rgba(192,16,64,0.12);
+  --gold:          #9a6a00;
+}
+body[data-theme="light"] #starCanvas,
+body[data-theme="light"] .nebula-layer { display: none; }
+
+/* Атмосфера рассвета */
+body[data-theme="light"] {
+  background:
+    radial-gradient(ellipse 80% 50% at 5% 5%,  rgba(160,120,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 95% 95%, rgba(80,160,255,0.05) 0%, transparent 60%),
+    #ece8f8;
+}
+body[data-theme="light"] header {
+  background: rgba(236,232,250,0.90) !important;
+  border-bottom: 1px solid rgba(70,40,160,0.1) !important;
+  backdrop-filter: blur(24px) saturate(1.4) !important;
+}
+body[data-theme="light"] footer {
+  background: rgba(230,226,246,0.92) !important;
+  border-top: 1px solid rgba(70,40,160,0.08) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+/* Логотип на светлой теме */
+body[data-theme="light"] .logo-main { color: var(--violet) !important; }
+body[data-theme="light"] .logo-sub  { color: var(--text-secondary) !important; }
+
+/* Оверлей модалей */
+body[data-theme="light"] .modal-overlay {
+  background: rgba(28,22,56,0.40) !important;
+}
+body[data-theme="light"] .modal {
+  box-shadow:
+    0 0 60px rgba(92,24,192,0.08),
+    0 20px 50px rgba(28,22,56,0.12) !important;
+}
+body[data-theme="light"] .modal-header {
+  border-bottom-color: rgba(70,40,160,0.1) !important;
+}
+
+/* Навигация */
+body[data-theme="light"] .nav-tab {
+  color: var(--text-secondary) !important;
+}
+body[data-theme="light"] .nav-tab.active {
+  color: var(--violet) !important;
+  border-bottom-color: var(--violet) !important;
+  background: rgba(92,24,192,0.07) !important;
+}
+body[data-theme="light"] .footer-tab { color: var(--text-secondary) !important; }
+body[data-theme="light"] .footer-tab.active {
+  color: var(--violet) !important;
+  background: rgba(92,24,192,0.08) !important;
+}
+
+/* Поиск и фильтры */
+body[data-theme="light"] .search-input,
+body[data-theme="light"] .filter-select,
+body[data-theme="light"] .edit-input,
+body[data-theme="light"] .edit-select,
+body[data-theme="light"] .edit-textarea,
+body[data-theme="light"] select {
+  background: rgba(28,22,56,0.04) !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(70,40,160,0.18) !important;
+}
+body[data-theme="light"] .edit-input:focus,
+body[data-theme="light"] .edit-select:focus,
+body[data-theme="light"] .edit-textarea:focus {
+  border-color: var(--violet-dim) !important;
+  box-shadow: 0 0 0 3px rgba(92,24,192,0.1) !important;
+}
+body[data-theme="light"] .edit-input::placeholder,
+body[data-theme="light"] .edit-textarea::placeholder {
+  color: var(--text-dim) !important;
+}
+
+/* rgba(255,255,255,...) оверлеи — инвертируем для светлого */
+body[data-theme="light"] .settings-toggle-group {
+  background: rgba(28,22,56,0.05) !important;
+  border-color: rgba(70,40,160,0.15) !important;
+}
+body[data-theme="light"] .stoggle-btn:hover {
+  background: rgba(28,22,56,0.06) !important;
+  color: var(--text-primary) !important;
+}
+body[data-theme="light"] .stoggle-btn.active {
+  background: rgba(92,24,192,0.12) !important;
+  border-color: var(--violet-dim) !important;
+  color: var(--violet) !important;
+  box-shadow: 0 0 10px rgba(92,24,192,0.15) !important;
+}
+
+/* Карточки питомцев */
+body[data-theme="light"] .pet-card {
+  background: rgba(28,22,56,0.025) !important;
+}
+body[data-theme="light"] .pet-card:hover {
+  background: rgba(92,24,192,0.06) !important;
+  border-color: var(--violet) !important;
+}
+body[data-theme="light"] .pet-card.selected {
+  background: rgba(92,24,192,0.08) !important;
+  border-color: var(--violet) !important;
+}
+
+/* Субблоки */
+body[data-theme="light"] .subblock {
+  background: rgba(28,22,56,0.025) !important;
+  border-color: rgba(70,40,160,0.08) !important;
+}
+
+/* Скроллбар */
+body[data-theme="light"] ::-webkit-scrollbar-track { background: rgba(28,22,56,0.04); }
+body[data-theme="light"] ::-webkit-scrollbar-thumb { background: rgba(70,40,160,0.2); }
+
+/* Строки тестов */
+body[data-theme="light"] .test-row { border-bottom-color: rgba(70,40,160,0.06) !important; }
+body[data-theme="light"] .test-row:hover { background: rgba(28,22,56,0.04) !important; }
+
+/* Сайдбар помётов и журнала */
+body[data-theme="light"] .litter-card,
+body[data-theme="light"] .kitten-card,
+body[data-theme="light"] .event-card {
+  background: rgba(28,22,56,0.03) !important;
+}
+body[data-theme="light"] .litter-card:hover,
+body[data-theme="light"] .kitten-card:hover {
+  background: rgba(92,24,192,0.06) !important;
+  border-color: var(--violet) !important;
+}
+body[data-theme="light"] .litter-card.selected {
+  background: rgba(92,24,192,0.08) !important;
+  border-color: var(--violet) !important;
+}
+
+/* Ячейки календаря */
+body[data-theme="light"] .calendar-cell {
+  background: rgba(28,22,56,0.02) !important;
+  border-color: rgba(70,40,160,0.06) !important;
+}
+body[data-theme="light"] .calendar-cell:hover {
+  background: rgba(92,24,192,0.06) !important;
+  border-color: rgba(70,40,160,0.2) !important;
+}
+body[data-theme="light"] .calendar-cell.today {
+  border-color: var(--violet) !important;
+}
+body[data-theme="light"] .calendar-cell.selected {
+  background: rgba(92,24,192,0.1) !important;
+}
+
+/* Кнопки */
+body[data-theme="light"] .btn-secondary {
+  background: rgba(28,22,56,0.05) !important;
+  border-color: rgba(70,40,160,0.2) !important;
+  color: var(--text-primary) !important;
+}
+body[data-theme="light"] .btn-secondary:hover {
+  background: rgba(28,22,56,0.08) !important;
+  border-color: var(--violet-dim) !important;
+}
+body[data-theme="light"] .btn-back {
+  color: var(--text-secondary) !important;
+  border-color: rgba(70,40,160,0.15) !important;
+}
+body[data-theme="light"] .btn-back:hover {
+  color: var(--violet) !important;
+  border-color: var(--violet) !important;
+}
+
+/* Badges */
+body[data-theme="light"] .badge-own  { background: rgba(6,130,180,0.12) !important; color: var(--cyan) !important; }
+body[data-theme="light"] .badge-other { background: rgba(11,136,80,0.12) !important; color: var(--emerald) !important; }
+
+/* Разделительные линии */
+body[data-theme="light"] .divider-line,
+body[data-theme="light"] hr {
+  border-color: rgba(70,40,160,0.1) !important;
+}
+
+
+/* ══════════════════════════════════════════════ */
+
+:root {
+  /* Backgrounds */
+  --bg-deep:       #050816;
+  --bg-mid:        #070d1e;
+  --bg-surface:    #0a1228;
+  --bg-card:       #0d1630;
+  --bg-card-hover: #111d3a;
+
+  /* Cyan — основной акцент, свой питомник */
+  --cyan:          #3fd2ff;
+  --cyan-dim:      #1a8aaa;
+  --cyan-glow:     rgba(63,210,255,0.15);
+  --cyan-glow-sm:  rgba(63,210,255,0.08);
+
+  /* Emerald — второй акцент, чужой питомник */
+  --emerald:       #28d98a;
+  --emerald-dim:   #0f7a4a;
+  --emerald-glow:  rgba(40,217,138,0.12);
+
+  /* Violet — EMS, генетика */
+  --violet:        #8a4fff;
+  --violet-dim:    #4a2aaa;
+  --violet-glow:   rgba(138,79,255,0.15);
+
+  /* Accent colors */
+  --orange:        #ff8c42;
+  --red:           #ff4466;
+  --red-glow:      rgba(255,68,102,0.15);
+  --gold:          #ffd700;
+
+  /* Text */
+  --text-primary:  #e8eeff;
+  --text-secondary:#7a8db8;
+  --text-dim:      #3d4f72;
+
+  /* Borders */
+  --border:        rgba(63,210,255,0.12);
+  --border-bright: rgba(63,210,255,0.35);
+
+  /* Border radius */
+  --radius-sm:     6px;
+  --radius:        10px;
+  --radius-lg:     14px;
+  --radius-xl:     20px;
+
+  /* Typography */
+  --font-display:  'Cinzel Decorative', serif;
+  --font-ui:       'Rajdhani', sans-serif;
+  --font-body:     'Exo 2', sans-serif;
+
+  /* Layout */
+  --sidebar-w:     280px;
+  --header-h:      64px;
+  --footer-h:      52px;
+
+  /* Parallax (обновляется через JS) */
+  --parallax-x: 0px;
+  --parallax-y: 0px;
+
+  /* Transitions */
+  --t-fast:  0.15s ease;
+  --t-base:  0.25s ease;
+  --t-slow:  0.4s ease;
+  --t-spring: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}

@@ -1,0 +1,99 @@
+/* ═══════════════════════════════════════════════
+   BASE — Reset & Global
+═══════════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Нативные date-input используют dark color-scheme чтобы picker был тёмным */
+input[type="date"] { color-scheme: dark; }
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8) hue-rotate(180deg);
+  cursor: pointer;
+  opacity: 0.7;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+/* Scrollbar — тонкий, стильный */
+::-webkit-scrollbar          { width: 4px; height: 4px; }
+::-webkit-scrollbar-track    { background: transparent; }
+::-webkit-scrollbar-thumb    { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
+
+/* ── Звёздный Canvas фон ── */
+#starCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Туманности ── */
+.nebula-layer {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.35;
+  transition: transform 0.6s ease-out;
+}
+
+.nebula-1 {
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse, rgba(138,79,255,0.5) 0%, transparent 70%);
+  top: -100px; left: -100px;
+  transform: translate(calc(var(--parallax-x) * -0.03), calc(var(--parallax-y) * -0.03));
+}
+.nebula-2 {
+  width: 500px; height: 350px;
+  background: radial-gradient(ellipse, rgba(63,210,255,0.4) 0%, transparent 70%);
+  bottom: -80px; right: -60px;
+  transform: translate(calc(var(--parallax-x) * 0.02), calc(var(--parallax-y) * 0.02));
+}
+.nebula-3 {
+  width: 350px; height: 250px;
+  background: radial-gradient(ellipse, rgba(40,217,138,0.3) 0%, transparent 70%);
+  top: 40%; left: 55%;
+  transform: translate(calc(var(--parallax-x) * 0.015), calc(var(--parallax-y) * 0.015));
+}
+
+/* Toast */
+#toast {
+  position: fixed;
+  bottom: calc(var(--footer-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background: var(--bg-card);
+  border: 1px solid var(--emerald-dim);
+  border-radius: var(--radius);
+  padding: 10px 20px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--emerald);
+  z-index: 9999;
+  pointer-events: none;
+  box-shadow: 0 0 20px var(--emerald-glow);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s var(--t-spring);
+}
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}

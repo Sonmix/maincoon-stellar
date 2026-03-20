@@ -1,0 +1,250 @@
+/* ═══════════════════════════════════════════════
+   SIDEBAR — Список питомцев, поиск, фильтры
+═══════════════════════════════════════════════ */
+
+/* display/width/height берётся из .tab-panel и .tab-panel.active */
+.cattery-panel {
+  overflow: hidden;
+}
+
+/* ── Сайдбар контейнер ── */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(7,13,30,0.7);
+  border-right: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: relative;
+  z-index: 10;
+}
+
+/* ── Поиск ── */
+.sidebar-search {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.search-input-wrap {
+  position: relative;
+}
+.search-input-wrap svg {
+  position: absolute;
+  left: 10px; top: 50%;
+  transform: translateY(-50%);
+  width: 14px; height: 14px;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+.search-input {
+  width: 100%;
+  padding: 8px 10px 8px 32px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  transition: border-color var(--t-base), box-shadow var(--t-base);
+}
+.search-input::placeholder { color: var(--text-dim); }
+.search-input:focus {
+  border-color: var(--cyan-dim);
+  box-shadow: 0 0 0 2px var(--cyan-glow-sm);
+}
+
+/* ── Фильтр-чипы ── */
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.chip {
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--t-base);
+}
+.chip:hover {
+  color: var(--text-secondary);
+  border-color: rgba(63,210,255,0.2);
+}
+.chip.active {
+  color: var(--cyan);
+  border-color: var(--cyan-dim);
+  background: var(--cyan-glow-sm);
+}
+
+/* ── Список питомцев ── */
+.pet-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 6px;
+}
+.pet-list::-webkit-scrollbar       { width: 4px; }
+.pet-list::-webkit-scrollbar-track { background: transparent; }
+.pet-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.pet-list::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
+
+/* ── Карточка питомца в сайдбаре ── */
+.pet-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--t-base), border-color var(--t-base), box-shadow var(--t-base), transform var(--t-fast);
+  margin-bottom: 4px;
+  position: relative;
+  animation: slideInDown 0.3s ease-out both;
+}
+
+.pet-card:hover {
+  background: rgba(63,210,255,0.05);
+  border-color: var(--border);
+  transform: translateX(2px);
+}
+.pet-card.selected {
+  background: rgba(63,210,255,0.08);
+  border-color: var(--cyan-dim);
+  box-shadow: inset 0 0 0 1px var(--cyan-glow), 0 0 16px var(--cyan-glow);
+  /* glowPulse — см. animations.css */
+}
+.pet-card.editing {
+  border-color: var(--orange);
+  background: rgba(255,140,66,0.06);
+}
+
+/* ── Аватар в сайдбаре ── */
+.pet-avatar {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: border-color var(--t-base);
+}
+.pet-card:hover .pet-avatar { border-color: rgba(63,210,255,0.2); }
+.pet-avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.pet-avatar-placeholder {
+  width: 26px; height: 26px;
+  opacity: 0.3;
+}
+
+/* Точка-индикатор питомника на аватаре */
+.pet-avatar::after {
+  content: '';
+  position: absolute;
+  bottom: 2px; right: 2px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--bg-card);
+}
+.pet-card[data-cattery="own"]   .pet-avatar::after { background: var(--cyan); }
+.pet-card[data-cattery="other"] .pet-avatar::after { background: var(--emerald); }
+
+/* ── Инфо питомца ── */
+.pet-info { flex: 1; min-width: 0; }
+.pet-name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+.pet-cattery-name {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.pet-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.pet-ems-badge {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--violet);
+  letter-spacing: 0.05em;
+}
+.pet-gender { font-size: 10px; opacity: 0.6; }
+.pet-age    { font-size: 10px; color: var(--text-dim); }
+
+/* Бейдж питомника */
+.cattery-badge {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.cattery-badge.own {
+  color: var(--cyan);
+  background: var(--cyan-glow-sm);
+  border: 1px solid rgba(63,210,255,0.2);
+}
+.cattery-badge.other {
+  color: var(--emerald);
+  background: var(--emerald-glow);
+  border: 1px solid rgba(40,217,138,0.2);
+}
+
+/* ── Кнопки сайдбара ── */
+.sidebar-actions {
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(7,13,30,0.5);
+}
+
+/* Пустой список */
+.pet-list-empty {
+  text-align: center;
+  padding: 24px 12px;
+  color: var(--text-dim);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}

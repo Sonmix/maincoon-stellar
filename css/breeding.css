@@ -1,0 +1,1162 @@
+/* ═══════════════════════════════════════════════
+   BREEDING — Прогноз вязки
+   Aesthetic: Deep Space Genetics Analyzer
+   Holographic scan readouts, cosmic alignment
+═══════════════════════════════════════════════ */
+
+/* ── Scrollbar ── */
+.breeding-panel::-webkit-scrollbar { width: 4px; }
+.breeding-panel::-webkit-scrollbar-track { background: transparent; }
+.breeding-panel::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 2px; }
+
+/* ── Панель ── */
+.breeding-panel {
+  flex: 1;
+  width: 100%;
+  padding: 28px 28px 40px;
+  overflow-y: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  position: relative;
+}
+
+/* Фоновая текстура — имитация звёздного поля */
+.breeding-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 50%, rgba(63,210,255,0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 80% 30%, rgba(138,79,255,0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.breeding-panel > * { position: relative; z-index: 1; }
+
+/* ── Заголовок ── */
+.breeding-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.breeding-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--violet);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0;
+  text-shadow:
+    0 0 20px rgba(138,79,255,0.6),
+    0 0 40px rgba(138,79,255,0.2);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Светящаяся точка рядом с заголовком */
+.breeding-title::after {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--violet);
+  box-shadow: 0 0 8px var(--violet), 0 0 16px rgba(138,79,255,0.5);
+  animation: breedPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes breedPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--violet), 0 0 16px rgba(138,79,255,0.5); }
+  50%       { opacity: 0.5; box-shadow: 0 0 4px var(--violet); }
+}
+
+.breeding-subtitle {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.breeding-separator {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--violet) 20%,
+    var(--cyan) 60%,
+    transparent 100%
+  );
+  margin-top: 6px;
+  opacity: 0.4;
+  position: relative;
+}
+
+.breeding-separator::after {
+  content: '';
+  position: absolute;
+  left: 20%;
+  top: -1px;
+  width: 4px;
+  height: 3px;
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan);
+  border-radius: 1px;
+}
+
+/* ── Пара родителей ── */
+.breeding-pair {
+  display: grid;
+  grid-template-columns: 1fr 150px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+/* ── Слот питомца ── */
+.pair-slot {
+  background: linear-gradient(145deg, var(--bg-card) 0%, rgba(10,18,40,0.9) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Угловые декоративные линии — sci-fi уголки */
+.pair-slot::before,
+.pair-slot::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.pair-slot::before {
+  top: 8px; left: 8px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+  border-radius: 3px 0 0 0;
+}
+
+.pair-slot::after {
+  bottom: 8px; right: 8px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+  border-radius: 0 0 3px 0;
+}
+
+/* ♂ Слот кота — синяя гендерная рамка */
+.pair-slot.male {
+  border-color: rgba(74,158,255,0.2);
+}
+.pair-slot.male::before,
+.pair-slot.male::after {
+  border-color: #4a9eff;
+}
+.pair-slot.male:hover {
+  border-color: rgba(74,158,255,0.45);
+  box-shadow: 0 0 28px rgba(74,158,255,0.1), inset 0 0 24px rgba(74,158,255,0.04);
+}
+.pair-slot.male:hover::before,
+.pair-slot.male:hover::after { opacity: 1; }
+
+/* ♀ Слот кошки — фиолетово-розовая гендерная рамка */
+.pair-slot.female {
+  border-color: rgba(138,79,255,0.2);
+}
+.pair-slot.female::before,
+.pair-slot.female::after {
+  border-color: rgba(200,80,255,0.8);
+}
+.pair-slot.female:hover {
+  border-color: rgba(180,60,255,0.45);
+  box-shadow: 0 0 28px rgba(138,79,255,0.12), 0 0 14px rgba(255,100,200,0.06), inset 0 0 24px rgba(138,79,255,0.04);
+}
+.pair-slot.female:hover::before,
+.pair-slot.female:hover::after { opacity: 1; }
+
+/* ── Метка слота ── */
+.pair-slot-label {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.pair-slot.male   .pair-slot-label { color: #4a9eff; }
+.pair-slot.female .pair-slot-label { color: rgba(200,80,255,0.9); }
+
+.pair-slot-label::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%;
+  height: 1px;
+}
+
+.pair-slot.male   .pair-slot-label::after { background: linear-gradient(90deg, #4a9eff, transparent); }
+.pair-slot.female .pair-slot-label::after { background: linear-gradient(90deg, rgba(200,80,255,0.9), transparent); }
+
+/* ── Select выбора питомца ── */
+.pair-select {
+  width: 100%;
+  background: rgba(10,18,40,0.8);
+  border: 1px solid rgba(63,210,255,0.1);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 9px 32px 9px 12px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233d4f72' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 14px;
+}
+
+.pair-slot.male   .pair-select:focus { border-color: rgba(74,158,255,0.4); box-shadow: 0 0 10px rgba(74,158,255,0.12); }
+.pair-slot.female .pair-select:focus { border-color: rgba(180,60,255,0.4); box-shadow: 0 0 10px rgba(180,60,255,0.12); }
+
+/* ── Мини-карточка питомца ── */
+.pair-pet-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: rgba(7,13,30,0.6);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: var(--radius);
+  padding: 10px;
+  animation: petCardIn 0.2s ease-out;
+}
+
+@keyframes petCardIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pair-pet-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.pair-slot.male   .pair-pet-avatar { box-shadow: 0 0 10px rgba(74,158,255,0.12); }
+.pair-slot.female .pair-pet-avatar { box-shadow: 0 0 10px rgba(180,60,255,0.12); }
+
+.pair-pet-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.pair-pet-name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+
+.pair-pet-meta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pair-pet-ems {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--violet);
+  background: rgba(138,79,255,0.1);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(138,79,255,0.2);
+}
+
+.pair-pet-cattery {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+
+.pair-pet-age {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+}
+
+/* ── Пустой слот ── */
+.pair-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 16px;
+  color: var(--text-dim);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px dashed rgba(255,255,255,0.05);
+  border-radius: var(--radius);
+}
+
+.pair-empty svg {
+  width: 28px;
+  height: 28px;
+  opacity: 0.25;
+}
+
+/* ── Коннектор (центральная колонка) ── */
+.pair-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+  padding-top: 38px;
+  position: relative;
+}
+
+/* Вертикальная линия соединения */
+.pair-connector::before {
+  content: '';
+  position: absolute;
+  top: 60px;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, var(--violet), transparent);
+  opacity: 0.15;
+}
+
+.connector-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(138,79,255,0.2) 0%, rgba(138,79,255,0.05) 70%);
+  border: 1px solid rgba(138,79,255,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--violet);
+  position: relative;
+  animation: connectorGlow 3s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes connectorGlow {
+  0%, 100% { box-shadow: 0 0 12px rgba(138,79,255,0.3), inset 0 0 12px rgba(138,79,255,0.05); }
+  50%       { box-shadow: 0 0 24px rgba(138,79,255,0.5), inset 0 0 20px rgba(138,79,255,0.1); }
+}
+
+/* Вращающееся кольцо вокруг иконки */
+.connector-icon::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-top-color: rgba(138,79,255,0.4);
+  border-right-color: rgba(63,210,255,0.2);
+  animation: connectorSpin 4s linear infinite;
+}
+
+@keyframes connectorSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.connector-icon svg { width: 22px; height: 22px; }
+
+/* ── Кнопка расчёта ── */
+.calc-btn {
+  background: linear-gradient(135deg, rgba(138,79,255,0.2) 0%, rgba(138,79,255,0.08) 100%);
+  border: 1px solid rgba(138,79,255,0.35);
+  border-radius: var(--radius);
+  color: var(--violet);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: normal;
+  text-align: center;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer при ховере */
+.calc-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(138,79,255,0.15), transparent);
+  transition: left 0.4s ease;
+}
+
+.calc-btn:hover:not(:disabled)::before { left: 100%; }
+
+.calc-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(138,79,255,0.3) 0%, rgba(138,79,255,0.15) 100%);
+  border-color: rgba(138,79,255,0.6);
+  box-shadow: 0 0 20px rgba(138,79,255,0.25), 0 4px 12px rgba(0,0,0,0.3);
+  transform: translateY(-1px);
+}
+
+.calc-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 0 10px rgba(138,79,255,0.2);
+}
+
+.calc-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  filter: grayscale(0.3);
+}
+
+/* ── Секция результатов ── */
+.breeding-results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: resultsReveal 0.4s ease-out;
+}
+
+@keyframes resultsReveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.results-section {
+  background: linear-gradient(145deg, var(--bg-card) 0%, rgba(7,13,30,0.95) 100%);
+  border: 1px solid rgba(63,210,255,0.07);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Декоративная полоска сверху секции */
+.results-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--violet), var(--cyan), transparent);
+  opacity: 0.3;
+}
+
+.results-section-title {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.results-section-title svg {
+  color: var(--cyan);
+  opacity: 0.7;
+}
+
+/* ── Сетка карточек цвета ── */
+.color-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+/* ── Карточка цвета ── */
+.color-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(7,13,30,0.7);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Цветной акцент слева — более яркий, с glow */
+.color-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--card-color, var(--violet));
+  box-shadow: 0 0 8px var(--card-color, var(--violet));
+  opacity: 0.8;
+}
+
+.color-card:hover {
+  background: rgba(17,29,58,0.8);
+  border-color: rgba(255,255,255,0.09);
+  transform: translateX(2px);
+}
+
+/* Цветной свотч — круг с внутренним свечением */
+.color-swatch {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  position: relative;
+}
+
+/* Блик на свотче */
+.color-swatch::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 6px;
+  width: 10px; height: 6px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+.color-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.color-name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.color-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.color-badge {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(63,210,255,0.08);
+  border: 1px solid rgba(63,210,255,0.15);
+  color: var(--cyan);
+}
+
+.color-badge.silver {
+  background: rgba(138,79,255,0.08);
+  border-color: rgba(138,79,255,0.18);
+  color: var(--violet);
+}
+
+.color-badge.spotting {
+  background: rgba(255,140,66,0.08);
+  border-color: rgba(255,140,66,0.18);
+  color: var(--orange);
+}
+
+.color-gender {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+
+.color-prob {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--violet);
+  text-shadow: 0 0 10px rgba(138,79,255,0.5);
+  flex-shrink: 0;
+  min-width: 38px;
+  text-align: right;
+}
+
+/* ── Таблица совместимости ── */
+.compat-tests {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.compat-header {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 0 10px 6px;
+}
+
+.compat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(7,13,30,0.5);
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.compat-row:hover {
+  background: rgba(17,29,58,0.6);
+  border-color: rgba(255,255,255,0.05);
+}
+
+.compat-test-name {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.compat-sides {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.compat-divider {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--text-dim);
+  opacity: 0.5;
+}
+
+.compat-result {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: 4px;
+  min-width: 44px;
+  text-align: center;
+}
+
+.compat-result.result-ok {
+  background: rgba(40,217,138,0.1);
+  border: 1px solid rgba(40,217,138,0.25);
+  color: var(--emerald);
+  text-shadow: 0 0 8px rgba(40,217,138,0.3);
+}
+
+.compat-result.result-carrier {
+  background: rgba(255,140,66,0.1);
+  border: 1px solid rgba(255,140,66,0.25);
+  color: var(--orange);
+}
+
+.compat-result.result-danger {
+  background: rgba(255,68,102,0.1);
+  border: 1px solid rgba(255,68,102,0.25);
+  color: var(--red);
+  text-shadow: 0 0 8px rgba(255,68,102,0.3);
+}
+
+.compat-result.result-unknown {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text-dim);
+}
+
+/* ── Предупреждения ── */
+.compat-warnings {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.warning-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  border-left: 2px solid;
+}
+
+.ok-row {
+  background: rgba(40,217,138,0.05);
+  border-color: var(--emerald);
+  color: rgba(40,217,138,0.9);
+  border-left-color: var(--emerald);
+  border-top: 1px solid rgba(40,217,138,0.1);
+  border-right: 1px solid rgba(40,217,138,0.05);
+  border-bottom: 1px solid rgba(40,217,138,0.05);
+}
+
+.warn-row {
+  background: rgba(255,140,66,0.05);
+  border-color: var(--orange);
+  color: rgba(255,140,66,0.9);
+  border-top: 1px solid rgba(255,140,66,0.1);
+  border-right: 1px solid rgba(255,140,66,0.05);
+  border-bottom: 1px solid rgba(255,140,66,0.05);
+}
+
+.danger-row {
+  background: rgba(255,68,102,0.06);
+  border-color: var(--red);
+  color: rgba(255,68,102,0.9);
+  border-top: 1px solid rgba(255,68,102,0.12);
+  border-right: 1px solid rgba(255,68,102,0.06);
+  border-bottom: 1px solid rgba(255,68,102,0.06);
+}
+
+/* ── Блок инбридинга ── */
+.inbreeding-block {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(7,13,30,0.6);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Сканирующая линия */
+.inbreeding-block::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
+  opacity: 0.06;
+  top: 50%;
+}
+
+.inbreeding-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.inbreeding-value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.inbreeding-status {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+/* Цвета по уровню инбридинга */
+.inbreed-ok .inbreeding-value {
+  color: var(--emerald);
+  text-shadow: 0 0 16px rgba(40,217,138,0.4);
+}
+.inbreed-ok .inbreeding-status {
+  background: rgba(40,217,138,0.1);
+  border: 1px solid rgba(40,217,138,0.2);
+  color: var(--emerald);
+}
+.inbreed-ok { border-color: rgba(40,217,138,0.12); }
+
+.inbreed-warn .inbreeding-value {
+  color: var(--gold);
+  text-shadow: 0 0 16px rgba(255,215,0,0.3);
+}
+.inbreed-warn .inbreeding-status {
+  background: rgba(255,215,0,0.08);
+  border: 1px solid rgba(255,215,0,0.2);
+  color: var(--gold);
+}
+.inbreed-warn { border-color: rgba(255,215,0,0.1); }
+
+.inbreed-danger .inbreeding-value {
+  color: var(--red);
+  text-shadow: 0 0 16px rgba(255,68,102,0.4);
+}
+.inbreed-danger .inbreeding-status {
+  background: rgba(255,68,102,0.1);
+  border: 1px solid rgba(255,68,102,0.2);
+  color: var(--red);
+}
+.inbreed-danger { border-color: rgba(255,68,102,0.12); }
+
+/* ── Нет данных ── */
+.no-genetics-msg {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 24px 16px;
+  line-height: 1.7;
+  background: rgba(7,13,30,0.4);
+  border-radius: var(--radius);
+  border: 1px dashed rgba(255,255,255,0.05);
+  letter-spacing: 0.02em;
+}
+
+/* ── Бейдж паттерна (изумрудный) ── */
+.color-badge.pattern {
+  background: rgba(40,217,138,0.08);
+  border-color: rgba(40,217,138,0.2);
+  color: var(--emerald);
+}
+
+/* ── Бейдж WW-предупреждения ── */
+.color-badge.ww-badge {
+  background: rgba(255,140,66,0.1);
+  border-color: rgba(255,140,66,0.25);
+  color: var(--orange);
+  animation: breedPulse 1.8s ease-in-out infinite;
+}
+
+/* ── Гендерная метка черепаховых (только ♀) ── */
+.color-gender.tortie-only {
+  color: rgba(200,80,255,0.7);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* ── WW предупреждение над сеткой ── */
+.ww-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(255,140,66,0.06);
+  border: 1px solid rgba(255,140,66,0.2);
+  border-left: 3px solid var(--orange);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255,140,66,0.9);
+  box-shadow: 0 0 16px rgba(255,140,66,0.06);
+}
+
+/* ── Секции потомства ♀/♂ ── */
+.offspring-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.offspring-section + .offspring-section {
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.offspring-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.offspring-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.offspring-female .offspring-section-title { color: rgba(200,80,255,0.8); }
+.offspring-female .offspring-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(200,80,255,0.3), transparent);
+}
+
+.offspring-male .offspring-section-title { color: #4a9eff; }
+.offspring-male .offspring-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(74,158,255,0.3), transparent);
+}
+
+/* ── Топ-3 источника инбридинга ── */
+.inbreeding-ancestors {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(138,79,255,0.1);
+}
+
+.inbreeding-ancestors-title {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 5px;
+}
+
+.ancestor-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.ancestor-row:last-child { border-bottom: none; }
+
+.ancestor-name {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: rgba(138,79,255,0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.ancestor-contrib {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(138,79,255,0.5);
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+/* ── Квадрат Паннета ── */
+.punnett-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.punnett-locus {
+  background: rgba(7,13,30,0.5);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Sci-fi угловые декорации */
+.punnett-locus::before,
+.punnett-locus::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: rgba(63,210,255,0.2);
+  border-style: solid;
+}
+.punnett-locus::before {
+  top: 4px; left: 4px;
+  border-width: 1px 0 0 1px;
+}
+.punnett-locus::after {
+  bottom: 4px; right: 4px;
+  border-width: 0 1px 1px 0;
+}
+
+.punnett-locus-title {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.punnett-grid {
+  display: grid;
+  grid-template-columns: 36px 1fr 1fr;
+  gap: 4px;
+}
+
+.punnett-corner {
+  background: transparent;
+}
+
+.punnett-header-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(63,210,255,0.06);
+  border: 1px solid rgba(63,210,255,0.15);
+  border-radius: 4px;
+  padding: 5px 4px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.04em;
+  min-height: 28px;
+}
+
+.punnett-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  padding: 6px 4px;
+  min-height: 52px;
+  border: 1px solid transparent;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: default;
+}
+
+.punnett-cell:hover {
+  transform: scale(1.03);
+}
+
+.punnett-cell.dominant {
+  background: rgba(40,217,138,0.1);
+  border-color: rgba(40,217,138,0.25);
+  box-shadow: 0 0 10px rgba(40,217,138,0.08);
+}
+
+.punnett-cell.heterozygous {
+  background: rgba(63,210,255,0.06);
+  border-color: rgba(63,210,255,0.15);
+}
+
+.punnett-cell.recessive {
+  background: rgba(61,79,114,0.3);
+  border-color: rgba(61,79,114,0.4);
+}
+
+.punnett-cell-genotype {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.punnett-cell.dominant    .punnett-cell-genotype { color: var(--emerald); text-shadow: 0 0 8px rgba(40,217,138,0.4); }
+.punnett-cell.heterozygous .punnett-cell-genotype { color: var(--cyan); }
+.punnett-cell.recessive   .punnett-cell-genotype { color: var(--text-secondary); }
+
+.punnett-cell-label {
+  font-family: var(--font-body);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.punnett-cell.dominant    .punnett-cell-label { color: rgba(40,217,138,0.6); }
+.punnett-cell.heterozygous .punnett-cell-label { color: rgba(63,210,255,0.5); }
+.punnett-cell.recessive   .punnett-cell-label { color: var(--text-dim); }
+
+/* ── Адаптация для узких экранов ── */
+@media (max-width: 700px) {
+  .breeding-pair {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .pair-connector {
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 0;
+  }
+  .pair-connector::before { display: none; }
+  .color-cards-grid { grid-template-columns: 1fr; }
+  .inbreeding-block { grid-template-columns: 1fr; gap: 8px; }
+}

@@ -1,0 +1,335 @@
+/* ═══════════════════════════════════════════════
+   LAYOUT — App Shell, Header, Footer, Panels
+═══════════════════════════════════════════════ */
+
+/* ── App Shell ── */
+#app {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ── Header ── */
+#header {
+  height: var(--header-h);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: linear-gradient(180deg, rgba(5,8,22,0.95) 0%, rgba(5,8,22,0.7) 100%);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  z-index: 100;
+}
+
+/* Линия свечения под хедером */
+#header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--violet), transparent);
+  opacity: 0.5;
+}
+
+/* ── Logo ── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.logo:hover .logo-main {
+  text-shadow: 0 0 28px var(--cyan), 0 0 56px rgba(63,210,255,0.5);
+}
+.logo-icon {
+  width: 36px; height: 36px;
+  position: relative;
+}
+.logo-icon svg {
+  width: 100%; height: 100%;
+}
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+.logo-main {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 20px var(--cyan), 0 0 40px rgba(63,210,255,0.3);
+}
+.logo-sub {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--cyan);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-top: 2px;
+  opacity: 0.9;
+}
+
+/* ── Header Nav ── */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-tab {
+  position: relative;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: color var(--t-base), background var(--t-base);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.nav-tab .tab-icon {
+  width: 16px; height: 16px;
+  opacity: 0.7;
+  transition: opacity var(--t-base);
+}
+.nav-tab:hover {
+  color: var(--text-primary);
+  background: var(--cyan-glow-sm);
+}
+.nav-tab:hover .tab-icon { opacity: 1; }
+
+.nav-tab.active {
+  color: var(--cyan);
+  background: var(--cyan-glow);
+}
+.nav-tab.active .tab-icon { opacity: 1; }
+
+/* Подсветка снизу активного таба */
+.nav-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 8px; right: 8px;
+  height: 2px;
+  background: var(--cyan);
+  border-radius: 1px;
+  box-shadow: 0 0 8px var(--cyan), 0 0 16px rgba(63,210,255,0.5);
+}
+
+/* Бейдж-счётчик на табе */
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: var(--violet);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 9px;
+  box-shadow: 0 0 8px var(--violet-glow);
+}
+
+/* ── Main content ── */
+#main {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Tab panels */
+.tab-panel {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.tab-panel.active {
+  display: flex;
+  animation: tabPanelIn 0.25s ease-out;
+}
+
+/* ── Footer ── */
+#footer {
+  height: var(--footer-h);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(0deg, rgba(5,8,22,0.95) 0%, rgba(5,8,22,0.6) 100%);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  z-index: 100;
+  padding: 0 20px;
+}
+#footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--violet), var(--cyan), transparent);
+  opacity: 0.4;
+}
+
+.footer-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.footer-tab {
+  padding: 6px 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--t-base);
+}
+.footer-tab:hover {
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+.footer-tab.active {
+  color: var(--cyan);
+  border-color: var(--cyan-dim);
+  background: var(--cyan-glow-sm);
+}
+
+/* Language switcher */
+.lang-switcher {
+  position: absolute;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+}
+.lang-btn {
+  padding: 3px 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all var(--t-base);
+}
+.lang-btn.active {
+  background: var(--cyan-glow);
+  color: var(--cyan);
+}
+
+/* ── Placeholder panels (заглушки вкладок) ── */
+.placeholder-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 12px;
+  opacity: 0.3;
+}
+.placeholder-panel svg {
+  width: 64px; height: 64px;
+  color: var(--cyan);
+  animation: float 4s ease-in-out infinite;
+}
+.placeholder-panel h2 {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+}
+.placeholder-panel p {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ── Баннер переданного питомца на вкладке «Прогноз вязки» ── */
+.breeding-preset-banner {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(13,22,48,0.85);
+  border: 1px solid rgba(63,210,255,0.25);
+  border-radius: var(--radius);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 12px rgba(63,210,255,0.1);
+  animation: slideInDown 0.25s ease-out;
+  opacity: 1;
+  z-index: 10;
+}
+.breeding-preset-label {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.breeding-preset-name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+}
+.breeding-preset-ems {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--violet);
+  font-weight: 600;
+}
+.breeding-preset-clear {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color var(--t-base);
+}
+.breeding-preset-clear:hover { color: var(--red); }
